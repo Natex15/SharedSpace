@@ -1,11 +1,12 @@
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
-  userID: { 
-    type: mongoose.Schema.Types.ObjectId, 
-    default: () => new mongoose.Types.ObjectId(), 
-    unique: true 
-  },
+  // redundant to mongodb _id
+  // userID: { 
+  //   type: mongoose.Schema.Types.ObjectId, 
+  //   default: () => new mongoose.Types.ObjectId(), 
+  //   unique: true 
+  // },
   username: { 
     type: String, 
     required: true 

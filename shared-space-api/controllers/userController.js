@@ -2,17 +2,6 @@ import bcrypt from "bcrypt";
 import mongoose from 'mongoose';
 import User from '../models/userModel.js';
 
-// find all user
-const findAllUsers = async (req, res, next) => {
-    try {
-        const users = await User.find();
-        res.send(users);
-    } catch (err) {
-        console.error('Error fetching users:', err);
-        res.status(500).send('Server error');
-    }
-};
-
 // find user by email
 const findByUserEmail = async (req, res, next) => {
     const email = req.body.email;
@@ -117,7 +106,7 @@ const registerUser = async (req, res) => {
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
         const newUser = new User({
             _id: new mongoose.Types.ObjectId(),
-            userID: new mongoose.Types.ObjectId(), 
+            // userID: new mongoose.Types.ObjectId(),  redundant ID
             username: req.body.username,
             email: req.body.email,
             password: hashedPassword
@@ -127,7 +116,7 @@ const registerUser = async (req, res) => {
 
         res.status(201).json({
             message: 'User created successfully.',
-            userID: newUser.userID
+            // userID: newUser.userID
         });
     } catch (error) {
         console.error('Registration error:', error);
