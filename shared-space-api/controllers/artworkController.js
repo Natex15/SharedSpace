@@ -85,17 +85,29 @@ const deleteArtwork = async (req, res, next) => {
 // update artwork by artworkID
 const updateArtwork = async (req, res, next) => {
     try {
+        const { title, description, imageURL, privacy, tags } = req.body;
+
+        const fieldsToUpdate = {};
+
+        if (title) {
+            fieldsToUpdate.title = title;
+        }
+        if (description) {
+            fieldsToUpdate.description = description;
+        }
+        if (imageURL) {
+            fieldsToUpdate.imageURL = imageURL;
+        }
+        if (privacy) {
+            fieldsToUpdate.privacy = privacy;
+        }
+        if (tags) {
+            fieldsToUpdate.tags = tags;
+        }
+
         const updatedArtwork = await Artwork.findOneAndUpdate(
             { artworkID: req.body.artworkID },
-            {
-                title: req.body.title,
-                description: req.body.description,
-                imageURL: req.body.imageURL,
-                privacy: req.body.privacy,
-                votes: req.body.votes,
-                tags: req.body.tags,
-                reportCount: req.body.reportCount
-            },
+            { $set: fieldsToUpdate },
             { new: true }
         );
 
