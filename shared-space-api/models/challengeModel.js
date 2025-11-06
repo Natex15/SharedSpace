@@ -22,10 +22,10 @@ const challengeSchema = new mongoose.Schema({
     type: Date, 
     required: true 
   },
-  criteriaTags: { 
-    type: [String], 
-    default: [] 
-  }
+  criteriaTags: [{
+    name: { type: String, required: true },
+    points: { type: Number, required: true, default: 1 }
+  }]
 });
 
 const Challenge = mongoose.model("Challenge", challengeSchema);
