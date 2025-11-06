@@ -31,18 +31,14 @@ const findByOwnerID = async (req, res, next) => {
 
 // find artwork gamit artworkid
 const findByArtworkID = async (req, res, next) => {
-    const artworkID = req.body.artworkID;
-    if (!artworkID) {
-        return res.status(400).send('artworkID is required');
-    }
     try {
-        const artwork = await Artwork.findOne({ artworkID: artworkID });
+        const artwork = await Artwork.findById(req.params.id);
         if (!artwork) {
             return res.status(404).send('Artwork not found');
         }
         res.send(artwork);
     } catch (err) {
-        console.error('Error fetching artwork by artworkID:', err);
+        console.error('Error fetching artwork by ID:', err);
         res.status(500).send('Server error');
     }
 };
@@ -51,7 +47,7 @@ const findByArtworkID = async (req, res, next) => {
 const createArtwork = async (req, res, next) => {
     try {
         const newArtwork = new Artwork({
-            artworkID: req.body.artworkID,
+            // artworkID: new mongoose.Types.ObjectId(),
             ownerID: req.user.userId,
             title: req.body.title,
             description: req.body.description,
@@ -71,7 +67,7 @@ const createArtwork = async (req, res, next) => {
 // delete artwork using artworkid
 const deleteArtwork = async (req, res, next) => {
     try {
-        const dArtwork = await Artwork.findOneAndDelete({ artworkID: req.body.artworkID });
+        const dArtwork = await Artwork.findByIdAndDelete(req.params.id);
         if (!dArtwork) {
             return res.status(404).send('Artwork not found');
         }
@@ -106,7 +102,7 @@ const updateArtwork = async (req, res, next) => {
         }
 
         const updatedArtwork = await Artwork.findOneAndUpdate(
-            { artworkID: req.body.artworkID },
+            req.params.id,
             { $set: fieldsToUpdate },
             { new: true }
         );
@@ -121,23 +117,6 @@ const updateArtwork = async (req, res, next) => {
     }
 };
 
-// vote for artwork 
-const voteArtwork = async (req, res, next) => {
-    const artworkID = req.body.artworkID;
-    try {
-        const artwork = await Artwork.findOne({ artworkID: artworkID });
-        if (!artwork) {
-            return res.status(404).send('Artwork not found');
-        }
-        artwork.votes += 1;
-        await artwork.save();
-        res.status(200).json({ message: 'Vote added', votes: artwork.votes });
-    } catch (err) {
-        console.error('Error voting for artwork:', err);
-        res.status(500).send('Unable to vote for artwork');
-    }
-};
-
 export {
-    findAllArtworks, findByOwnerID, findByArtworkID, createArtwork, deleteArtwork, updateArtwork, voteArtwork
+    findAllArtworks, findByOwnerID, findByArtworkID, createArtwork, deleteArtwork, updateArtwork
 };

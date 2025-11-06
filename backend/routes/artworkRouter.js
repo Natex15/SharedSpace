@@ -16,11 +16,10 @@ const router = express.Router();
 router.get('/all', findAllArtworks);
 
 // Protected routes (require token) example
+router.get('/:id', verifyToken, findByArtworkID);
 router.post('/owner', verifyToken, findByOwnerID);
-router.post('/find', verifyToken, findByArtworkID);
-router.post('/create', verifyToken, createArtwork);
-router.put('/update', verifyToken, updateArtwork);
-router.delete('/delete', verifyToken, deleteArtwork);
-router.post('/vote', verifyToken, voteArtwork);
+router.post('/create/', verifyToken, createArtwork);
+router.put('/update/:id', verifyToken, updateArtwork);
+router.delete('/delete/:id', verifyToken, deleteArtwork);
 
 export default router;

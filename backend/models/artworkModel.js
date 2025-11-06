@@ -1,11 +1,12 @@
 import mongoose from "mongoose";
 
 const artworkSchema = new mongoose.Schema({
-  artworkID: { 
-    type: mongoose.Schema.Types.ObjectId, 
-    default: () => new mongoose.Types.ObjectId(), 
-    unique: true 
-  },
+  // redundant ID
+  // artworkID: { 
+  //   type: mongoose.Schema.Types.ObjectId, 
+  //   default: () => new mongoose.Types.ObjectId(), 
+  //   unique: true 
+  // },
   // reference to user
   ownerID: { 
     type: mongoose.Schema.Types.ObjectId, 
@@ -43,7 +44,12 @@ const artworkSchema = new mongoose.Schema({
   reportCount: { 
     type: Number, 
     default: 0 
-  }
+  },
+  challengeId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Challenge',
+    default: null
+  },
 });
 
 const Artwork = mongoose.model("Artwork", artworkSchema);

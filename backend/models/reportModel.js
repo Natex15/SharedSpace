@@ -1,11 +1,12 @@
 import mongoose from "mongoose";
 
 const reportSchema = new mongoose.Schema({
-  reportID: { 
-    type: mongoose.Schema.Types.ObjectId, 
-    default: () => new mongoose.Types.ObjectId(), 
-    unique: true 
-  },
+  // redundant Id
+  // reportID: { 
+  //   type: mongoose.Schema.Types.ObjectId, 
+  //   default: () => new mongoose.Types.ObjectId(), 
+  //   unique: true 
+  // },
   // reference to artwork
   artworkID: { 
     type: mongoose.Schema.Types.ObjectId, 
