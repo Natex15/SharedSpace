@@ -2,6 +2,9 @@ import './App.css'
 import "@fontsource/poppins"
 import { BorderlessButton } from './components/BorderlessButton'
 import { Routes, Route } from 'react-router-dom'
+import { ArtWallPage } from './pages/ArtWallPage.jsx'
+import { FriendsSpacePage } from './pages/FriendsSpacePage.jsx'
+import { LeaderboardPage } from './pages/LeaderboardPage.jsx'
 
 function App() {
   return (
@@ -14,6 +17,10 @@ function App() {
           <BorderlessButton to='/' message={'dark body button'} type='darkbody'/>
         </div>
       } />
+      
+      <Route path="art-wall" element={<ArtWallPage />}/>
+      <Route path="friends-space" element={<FriendsSpacePage />}/>
+      <Route path="leaderboard" element={<LeaderboardPage />}/>
     </Routes>
   )
 }
