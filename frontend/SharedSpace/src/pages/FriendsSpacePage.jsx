@@ -1,9 +1,10 @@
-
+import './FriendsSpacePage.css'
 
 export function FriendsSpacePage(){
     return(
-        <>
-            <h1>Friend's Art Wall</h1>
-        </>
+        <div className="friendSpaceContainer">
+            <h1 className="text">Friends</h1>
+            <p className="text">See what your friends have been sharing lately</p>
+        </div>
     )
 }

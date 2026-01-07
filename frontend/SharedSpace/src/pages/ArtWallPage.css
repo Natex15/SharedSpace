@@ -1,0 +1,17 @@
+.artWork{
+    width: 399px;
+}
+
+.artWall{
+    padding: 20px;
+}
+
+.text{
+    text-align: center;
+    font-family: 'Poppins';
+    color: #341539;
+}
+
+.artWallContainer{
+    background-color: #FAF3EB;
+}
