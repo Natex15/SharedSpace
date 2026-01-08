@@ -16,8 +16,7 @@ const voteSchema = new mongoose.Schema({
   score: { 
     type: Number, 
     required: true, 
-    min: 1, 
-    max: 10 
+    default: 0
   },
   selectedTags: { 
     type: [String], 
