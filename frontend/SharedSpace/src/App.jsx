@@ -10,7 +10,7 @@ import { FriendsSpacePage } from './pages/user/FriendsSpacePage.jsx'
 import { LeaderboardPage } from './pages/user/LeaderboardPage.jsx'
 import { LoginPage } from './pages/user/LoginPage.jsx'
 import { SignUpPage } from './pages/user/SignUpPage.jsx'
-import { HomePage } from './pages/HomePage.jsx'
+import { HomePage } from './pages/user/HomePage.jsx'
 
 function App() {
   const location = useLocation()
@@ -34,7 +34,7 @@ function App() {
           </div>
         } />
 
-        <Route path="art-wall" element={<HomePage />} />
+        <Route path="home-page" element={<HomePage />} />
         <Route path="art-wall" element={<ArtWallPage />} />
         <Route path="friends-space" element={<FriendsSpacePage />} />
         <Route path="leaderboard" element={<LeaderboardPage />} />
