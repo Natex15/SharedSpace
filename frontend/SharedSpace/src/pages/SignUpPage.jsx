@@ -1,31 +1,58 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { BorderedButton } from '../components/BorderedButton'
+import SharedSpaceLogo from '../assets/SharedSpaceLogo.svg'
 import './SignUpPage.css'
 
 export function SignUpPage() {
+  const navigate = useNavigate();
+
+  const handleCreateAccount = (e) => {
+    e.preventDefault();
+    navigate('/login'); // go login
+  };
+
   return (
     <>
-        <div className = "card">
-          <div className = "login-form">
-              <h1>Create an Account</h1>
+      <div className="card">
+        <div className="card-body">
+          <div className="sign-up-prompt">
+            <div className="section-header">
+              Already have an account?
+            </div>
 
-              <form>
-                  <input type = "email" placeholder = "Enter email"/>
-                  <input type = "text" placeholder = "Enter username"/>
-                  <input type = "password" placeholder = "Enter password"/>
-                  <input type = "password" placeholder = "Confirm password"/>
+            <div className="section-header2">
+              Join a community of fellow artists today!
+            </div>
 
-                  <button>Sign Up</button>
-              </form>
+            <div className="login-page-logo">
+              <img src={SharedSpaceLogo} alt="Shared Space" className="page-logo" />
+            </div>
+
+            <div className="card-button">
+              <Link to="/login">
+                <BorderedButton to="/login" message="Log In" size="purple" />
+              </Link>
+            </div>
           </div>
 
-          <div className = "signup-prompt">
-              <h3>Already have an account?</h3>
+          <div className="login-form">
+            <div className="section-header">
+              Create an Account
+            </div>
 
-              <Link to = "/login">
-                <button>Log In</button>
-              </Link>
+            <form onSubmit={handleCreateAccount}>
+              <input type="email" placeholder="Enter email" required />
+              <input type="text" placeholder="Enter username" required />
+              <input type="password" placeholder="Enter password" required />
+              <input type="password" placeholder="Confirm password" required />
+
+              <div className="card-button">
+                <BorderedButton to="/login" message="Sign Up" size="purple" />
+              </div>
+            </form>
           </div>
         </div>
+      </div>
     </>
   );
 }
