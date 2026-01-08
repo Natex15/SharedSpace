@@ -1,14 +1,13 @@
 import express from 'express';
-import { 
+import {
     findAllArtworks,
     findByOwnerID,
     findByArtworkID,
     createArtwork,
     deleteArtwork,
-    updateArtwork,
-    voteArtwork
+    updateArtwork
 } from '../controllers/artworkController.js';
-import { verifyToken } from '../middleware/auth.js'; // optional, for protected routes
+import { verifyToken } from '../middleware/auth.js'; // for protected routes
 
 const router = express.Router();
 
