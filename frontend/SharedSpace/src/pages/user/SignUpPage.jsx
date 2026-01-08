@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { BorderedButton } from '../components/BorderedButton'
-import SharedSpaceLogo from '../assets/SharedSpaceLogo.svg'
+import { BorderedButton } from '../../components/BorderedButton'
+import SharedSpaceLogo from '../../assets/SharedSpaceLogo.svg'
 import './SignUpPage.css'
 
 export function SignUpPage() {
