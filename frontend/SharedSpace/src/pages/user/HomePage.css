@@ -37,7 +37,8 @@
 .works{
     justify-content: center;
     text-align: center;
-    transform: translate(0px, 4rem);
+    margin-top: 4rem;
+    margin-bottom: 4rem;
     height: 10rem;
     background-color: #EDA8A8;
 }
@@ -67,6 +68,8 @@
     cursor: pointer;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    margin-bottom: 3rem;
+    background-color: #FAF3EB;
 }
 
 .art-card:hover {
@@ -79,4 +82,37 @@
     height: 100%;
     object-fit: cover;
     display: block;
+}
+
+
+.friends{
+    display: flex;
+    flex-direction: row;
+    margin-top: 20rem;
+    justify-content: center;
+    text-align: center;
+    background-color: #5C5A7B;
+}
+
+.friend-card{
+    border-radius: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    margin: 6rem;
+    margin-bottom: 5rem;
+    margin-left: 6rem;
+    background-color: #FAF3EB;
+    height: 25rem;
+    width: 25rem;
+}
+
+.friend-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+}
+
+.friendsText{
+    color: #FFE2E2;
+    font-size: 60;
+    margin-top: 15rem;
 }

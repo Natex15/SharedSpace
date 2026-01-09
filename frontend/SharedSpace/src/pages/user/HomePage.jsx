@@ -8,12 +8,22 @@ import SampleImg2 from '../../assets/react.svg'
 
 export function HomePage(){
      const artWorks = [
-            { img: SampleImg, date: "1/1/2026", description: "lorem ipsum dolor" ,author: "Nname"},
-            { img: SampleImg2, date: "1/4/2026", description: "lorem ipsum dolor" ,author: "Nname"},
-            { img: SampleImg2, date: "1/6/2026", description: "lorem ipsum dolor" ,author: "Cname"},
-            { img: SampleImg, date: "1/4/2026", description: "lorem ipsum dolor" ,author: "Dname"},
+        { img: SampleImg, date: "1/1/2026", description: "lorem ipsum dolor" ,author: "Nname"},
+        { img: SampleImg2, date: "1/4/2026", description: "lorem ipsum dolor" ,author: "Nname"},
+        { img: SampleImg2, date: "1/6/2026", description: "lorem ipsum dolor" ,author: "Cname"},
+        { img: SampleImg, date: "1/4/2026", description: "lorem ipsum dolor" ,author: "Dname"},
     ];
 
+    const friends_artWorks = [
+        { img: SampleImg, date: "1/1/2026", description: "lorem ipsum dolor" ,author: "Nname"},
+        { img: SampleImg2, date: "1/4/2026", description: "lorem ipsum dolor" ,author: "Nname"},
+        { img: SampleImg2, date: "1/6/2026", description: "lorem ipsum dolor" ,author: "Cname"},
+        { img: SampleImg, date: "1/4/2026", description: "lorem ipsum dolor" ,author: "Dname"},
+    ];
+
+    const randomIndex = Math.floor(Math.random() * friends_artWorks.length)
+
+    const friendArt = friends_artWorks[randomIndex]
     //note: need isort based on date
 
     const [activeArt, setActiveArt] = useState(null);
@@ -45,10 +55,21 @@ export function HomePage(){
                     ))}
                 </div>
             </div>
-
             
             <div className='friends'>
+                <ArtPopup
+                    trigger={activeArt != null}
+                    setTrigger={() => setActiveArt(null)}
+                    img={activeArt?.img}
+                    date={activeArt?.date}
+                    desc={activeArt?.description}
+                />
 
+                    <div key={friendArt.art} className='friend-card' onClick={() => setActiveArt(art)}>
+                        <img src={friendArt.img} alt={friendArt.description} className='art-image'></img>
+                    </div>
+
+                    <h1 className='friendsText'> Your friends shared their day!</h1>
             </div>
 
             <div className='bottom'>
