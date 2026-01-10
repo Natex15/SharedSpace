@@ -6,15 +6,15 @@ import './FriendsSpacePage.css'
 
 export function FriendsSpacePage() {
     const artWorks = [
-        { img: SampleImg, date: "1/1/2026", description: "lorem ipsum dolor" ,author: "Nname"},
-        { img: SampleImg2, date: "1/2/2026", description: "lorem ipsum dolor" ,author: "Nname"},
-        { img: SampleImg2, date: "1/3/2026", description: "lorem ipsum dolor" ,author: "Cname"},
-        { img: SampleImg, date: "1/4/2026", description: "lorem ipsum dolor" ,author: "Dname"},
-        { img: SampleImg2, date: "1/5/2026", description: "lorem ipsum dolor" ,author: "Ename"},
-        { img: SampleImg, date: "1/4/2026", description: "lorem ipsum dolor" ,author: "Aname"},
-        { img: SampleImg2, date: "1/5/2026", description: "lorem ipsum dolor" ,author: "Gname"},
-        { img: SampleImg, date: "1/4/2026", description: "lorem ipsum dolor" ,author: "Aname"},
-        { img: SampleImg2, date: "1/5/2026", description: "lorem ipsum dolor" ,author: "Iname"}
+        { img: SampleImg, date: "1/1/2026", description: "lorem ipsum dolor" ,author: "Nname" ,authorPic: SampleImg2},
+        { img: SampleImg2, date: "1/2/2026", description: "lorem ipsum dolor" ,author: "Nname" ,authorPic: SampleImg},
+        { img: SampleImg2, date: "1/3/2026", description: "lorem ipsum dolor" ,author: "Cname" ,authorPic: SampleImg},
+        { img: SampleImg, date: "1/4/2026", description: "lorem ipsum dolor" ,author: "Dname" ,authorPic: SampleImg2},
+        { img: SampleImg2, date: "1/5/2026", description: "lorem ipsum dolor" ,author: "Ename" ,authorPic: SampleImg},
+        { img: SampleImg, date: "1/4/2026", description: "lorem ipsum dolor" ,author: "Aname" ,authorPic: SampleImg2},
+        { img: SampleImg2, date: "1/5/2026", description: "lorem ipsum dolor" ,author: "Gname" ,authorPic: SampleImg},
+        { img: SampleImg, date: "1/4/2026", description: "lorem ipsum dolor" ,author: "Aname" ,authorPic: SampleImg2},
+        { img: SampleImg2, date: "1/5/2026", description: "lorem ipsum dolor" ,author: "Iname" ,authorPic: SampleImg}
     ]
 
     const [activeArt, setActiveArt] = useState(null);
@@ -44,6 +44,8 @@ export function FriendsSpacePage() {
                 img={activeArt?.img}
                 date={activeArt?.date}
                 desc={activeArt?.description}
+                author={activeArt?.author}
+                authorImg={activeArt?.authorPic}
             />
 
             <div className="content-wrapper">
@@ -63,9 +65,9 @@ export function FriendsSpacePage() {
                                 className="artwork-image"
                             />
                             <div className="artwork-avatar">
-                                <div className="avatar-circle">
-                                    {art.author?.charAt(0) || '?'}
-                                </div>
+                                
+                                    <img src={art.authorPic} className='avatar-circle'/>
+                                
                             </div>
                         </div>
                     ))}

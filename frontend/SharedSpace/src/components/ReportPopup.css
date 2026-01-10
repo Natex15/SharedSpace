@@ -1,0 +1,134 @@
+.report-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.report-popup-content {
+    width: 400px;
+    background-color: #FFFFFF;
+    padding: 32px;
+    border-radius: 12px;
+    position: relative;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.close-button {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    color: #2D3748;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+}
+
+.close-button:hover {
+    color: #1A202C;
+}
+
+.close-button svg {
+    width: 20px;
+    height: 20px;
+}
+
+.report-title {
+    margin: 0 0 24px 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: #1A202C;
+}
+
+.form-group {
+    margin-bottom: 24px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #2D3748;
+}
+
+.description-textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #CBD5E0;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+    background-color: #F7FAFC;
+    transition: border-color 0.2s;
+}
+
+.description-textarea:focus {
+    outline: none;
+    border-color: #4299E1;
+    background-color: #FFFFFF;
+}
+
+.button-group {
+    display: flex;
+    gap: 12px;
+}
+
+.submit-button {
+    flex: 1;
+    padding: 10px 24px;
+    background-color: #E53E3E;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.submit-button:hover {
+    background-color: #C53030;
+}
+
+.close-button-bottom {
+    flex: 1;
+    padding: 10px 24px;
+    background-color: #E2E8F0;
+    color: #2D3748;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.close-button-bottom:hover {
+    background-color: #CBD5E0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .report-popup-content {
+        width: 90%;
+        max-width: 400px;
+        padding: 24px;
+    }
+    
+    .button-group {
+        flex-direction: column;
+    }
+}
