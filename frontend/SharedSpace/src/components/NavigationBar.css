@@ -83,6 +83,24 @@
 
 /* -------------------------------------------------- */
 
+.notification-icon {
+    display: inline-block;
+    position: relative;
+}
+
+.notification-indicator {
+    background: red;
+    border: 2px solid darkred;
+    border-radius: 50%;
+    height: 10px;
+    position: absolute;
+    right: 0; 
+    top: 0;  
+    width: 10px;
+}
+
+/* -------------------------------------------------- */
+
 @media (max-width: 720px) {
     .navbar {
         grid-template-columns: 1fr;

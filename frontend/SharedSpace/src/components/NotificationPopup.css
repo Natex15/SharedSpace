@@ -1,0 +1,76 @@
+.notification-popup-card {
+    align-items: flex-start;
+    display: flex;
+    inset: 0;
+    justify-content: flex-end;
+    position: fixed;
+    z-index: 2000;
+}
+
+.notification-popup {
+    background: rgba(75,72,110,0.67);
+    border-radius: 8px;
+    box-shadow: 8px 8px 12px rgba(0,0,0,0.2);
+    margin: 1rem;
+    padding: 1rem;
+    width: 300px;
+    transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.notification-popup:hover {
+    box-shadow: 8px 8px 12px rgba(0,0,0,0.25);
+    transform: scale(1.05);
+}
+
+.notification-popup-top {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    margin: 0 0 1rem 0;
+}
+
+.notification-popup-header {
+    color: white;
+    font-weight: bold;
+}
+
+.notification-popup-list {
+    list-style: none;
+}
+
+.notification-popup-list li {
+    background: #FAF3EB;
+    border-radius: 7px;
+    box-shadow: 8px 8px 12px rgba(0,0,0,0.1);
+    color: #4B486E;
+    margin: 1rem 0 0 0;
+    padding: 0.5rem 0.5rem 0.5rem 0.75rem;
+    transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.notification-popup-list li:hover {
+    box-shadow: 8px 8px 12px rgba(0,0,0,0.15);
+    transform: scale(1.033);
+}
+
+.notification-close-button {
+    background-color: #ba7a7a;
+    border: none;
+    border-radius: 30px;
+    box-shadow: 0 5px 6px rgba(0, 0, 0, 0.28), inset 0 2px 3px rgba(0, 0, 0, 0.28);
+    color: #FFFFFF;
+    cursor: pointer;
+    font-family: "Poppins";
+    font-size: 1rem;
+    font-weight: bold;
+    margin-left: auto;
+    padding: 6px 12px;
+    transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out, color 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.notification-close-button:hover {
+    background-color: #FFE2E2;
+    box-shadow: 0 5px 6px rgba(0, 0, 0, 0.35), inset 0 2px 3px rgba(0, 0, 0, 0.28);
+    color: #000000;
+    transform: scale(1.05);
+}
