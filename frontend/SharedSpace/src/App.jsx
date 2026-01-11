@@ -11,6 +11,7 @@ import { LoginPage } from './pages/user/LoginPage.jsx'
 import { SignUpPage } from './pages/user/SignUpPage.jsx'
 import { HomePage } from './pages/user/HomePage.jsx'
 import { ProfilePage } from './pages/user/ProfilePage.jsx'
+import { ModDashboardPage } from './pages/user/ModDashboardPage.jsx'
 import { NotificationPopup } from './components/NotificationPopup'
 import { SignOutPopup } from './components/SignOutPopup'
 
@@ -49,6 +50,7 @@ function App() {
         <Route path="login" element={<LoginPage />} />
         <Route path="sign-up" element={<SignUpPage />} />
         <Route path="profile" element={<ProfilePage />} />
+        <Route path="mod-dashboard" element={<ModDashboardPage />} />
       </Routes>
 
       {showSignOutPopup && <SignOutPopup onClose={() => setShowSignOutPopup(false)} />}
