@@ -4,11 +4,20 @@
     padding-bottom: 40px;
 }
 
-.text {
+.title {
     text-align: center;
     font-family: 'Poppins', sans-serif;
+    font-weight: 700;
     color: #341539;
-    margin: 0;
+    margin-top: 20px;
+}
+
+.subtitle {
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400;
+    color: #341539;
+    margin-bottom: 30px;
 }
 
 .artWallWrapper {

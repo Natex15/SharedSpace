@@ -14,19 +14,17 @@
 .title {
     text-align: center;
     font-family: 'Poppins', sans-serif;
-    font-size: 48px;
     font-weight: 700;
     color: #341539;
-    margin: 40px 0 16px;
+    margin-top: 20px;
 }
 
 .subtitle {
     text-align: center;
     font-family: 'Poppins', sans-serif;
-    font-size: 18px;
     font-weight: 400;
     color: #341539;
-    margin: 0 0 60px;
+    margin-bottom: 30px;
 }
 
 .artworks-grid {
