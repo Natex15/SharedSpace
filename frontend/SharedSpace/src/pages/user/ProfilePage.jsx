@@ -5,6 +5,10 @@ import SampleImg from '../../assets/arts/ukiyo.jpg';
 import SampleImg2 from '../../assets/arts/almondtree.jpg';
 import './ProfilePage.css';
 
+// IN PROGRESS:
+// EDIT PROFILE (baka popup nlng idk)
+// FRIENDS TAB
+
 export function ProfilePage() {
   const user = {
     username: "Feesha",
@@ -71,8 +75,7 @@ export function ProfilePage() {
       />
 
       {/* HEADER */}
-      <div className="card-shadow">
-        <div className="profile-header">
+      <div className="profile-header">
           <div className="profile-info-container">
             <div className="profile-identity">
               <div className="profile-avatar">
@@ -106,7 +109,6 @@ export function ProfilePage() {
             </div>
 
           </div>
-        </div>
       </div>
 
 
@@ -178,7 +180,7 @@ export function ProfilePage() {
                 <h2 className="sidebar-title">Friends</h2>
 
                 <BorderedButton
-                  to="/friends-space"
+                  to="/friends"
                   message="View All"
                   size="purple"
                 />

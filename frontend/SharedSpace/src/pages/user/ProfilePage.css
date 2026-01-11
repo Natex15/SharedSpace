@@ -15,6 +15,7 @@
   padding: 2rem;
   border-radius: 16px;
   margin-bottom: 2rem;
+  box-shadow: 0 8px 10px rgba(0, 0, 0, 0.25);
 }
 
 .profile-info-container {
