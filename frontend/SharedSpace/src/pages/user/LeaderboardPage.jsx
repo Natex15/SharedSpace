@@ -26,9 +26,9 @@ export function LeaderboardPage(){
                         style={{backgroundColor: colors[index]}}
                     >
                         <span className="rank-number">{index + 1}</span>
-                        <img src={user.img} className='profile-avatar' alt={user.name}/>
-                        <span className="user-name">{user.name}</span>
-                        <span className="user-score">{user.score}</span>
+                        <img src={user.img} className='lb-profile-avatar' alt={user.name}/>
+                        <span className="lb-user-name">{user.name}</span>
+                        <span className="lb-user-score">{user.score}</span>
                     </div>
                 ))}
             </div>
