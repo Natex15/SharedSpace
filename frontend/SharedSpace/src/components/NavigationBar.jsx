@@ -80,7 +80,7 @@ export function NavigationBar({ onSignOut, hasNewNotifications, onNotifications 
             </div>
 
             <div className='right-icons'>
-                <div className="notification-icon" onClick={onNotifications}>
+                <div className="navbar-notification-icon" onClick={onNotifications}>
                     <svg className="navbar-icon" width="35" height="35" viewBox="0 -50 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <g clip-path="url(#clip0_0_1)">
                             <mask id="mask0_0_1" style={{ maskType: "luminance" }} maskUnits="userSpaceOnUse" x="0" y="0" width="500" height="500">

@@ -14,9 +14,21 @@ export function NotificationPopup({ onClose }) {
                 </div>
 
                 <ul className="notification-popup-list">
-                    <li>New friend request</li>
-                    <li>Your artwork got 5 likes</li>
-                    <li>Leaderboard updated</li>
+                    <li>
+                        <div className = "notification-info">
+                            <div className="notification-type">
+                                Notification type
+                            </div>
+
+                            <div className="notification-time">
+                                3m ago
+                            </div>
+                        </div>
+
+                        <div className="notification-content">
+                            Notification content
+                        </div>
+                    </li>
                 </ul>
             </div>
         </div>

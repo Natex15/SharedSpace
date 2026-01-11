@@ -43,6 +43,7 @@
     border-radius: 7px;
     box-shadow: 8px 8px 12px rgba(0,0,0,0.1);
     color: #4B486E;
+    font-size: 0.9rem;
     margin: 1rem 0 0 0;
     padding: 0.5rem 0.5rem 0.5rem 0.75rem;
     transition: box-shadow 0.25s ease, transform 0.25s ease;
@@ -73,4 +74,23 @@
     box-shadow: 0 5px 6px rgba(0, 0, 0, 0.35), inset 0 2px 3px rgba(0, 0, 0, 0.28);
     color: #000000;
     transform: scale(1.05);
+}
+
+/* -------------------------------------------------- */
+
+.notification-info {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    margin: 0 0 0.5rem 0;
+}
+
+.notification-type {
+    font-weight: bold;
+}
+
+.notification-time {
+    color: #EDA8A8;
+    margin-left: auto;
+    margin-right: 3px;
 }

@@ -74,21 +74,17 @@
     background: none;
     border: none;
     cursor: pointer;
-}
-
-.navbar-profile-icon {
-    margin-left: -0.425rem;
-    margin-right: 1rem;
+    margin-left: 6px;
 }
 
 /* -------------------------------------------------- */
 
-.notification-icon {
+.navbar-notification-icon {
     display: inline-block;
     position: relative;
 }
 
-.notification-indicator {
+.navbar-notification-indicator {
     background: red;
     border: 2px solid darkred;
     border-radius: 50%;
