@@ -12,7 +12,7 @@ import { Link } from 'react-router-dom'
  * 
  * Note: Provide either 'to' OR 'onClick', not both
  */
-export function BorderedButton({ to, onClick, message, size = 'large' }) {
+export function BorderedButton({ to, onClick, message, size = 'large', type='button' }) {
     const getButtonClass = () => {
         switch (size) {
             case 'purple':
@@ -29,7 +29,7 @@ export function BorderedButton({ to, onClick, message, size = 'large' }) {
     if (onClick) {
         return (
             <div className='borderedButton'>
-                <button className={getButtonClass()} onClick={onClick}>
+                <button className={getButtonClass()} onClick={onClick} type={type}>
                     {message}
                 </button>
             </div>
@@ -38,12 +38,10 @@ export function BorderedButton({ to, onClick, message, size = 'large' }) {
 
     // Otherwise, render with Link for navigation
     return (
-        <>
             <Link to={to} className='borderedButton'>
-                <button className={getButtonClass()}>
+                <button className={getButtonClass()} type={type}>
                     {message}
                 </button>
             </Link>
-        </>
     );
 }

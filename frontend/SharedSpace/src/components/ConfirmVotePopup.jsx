@@ -5,8 +5,9 @@ import './ConfirmVotePopup.css';
  * 
  * A modal popup that asks the user to confirm their vote submission.
  * 
- * props.onClose - Callback function to close the popup without confirming
- * props.onConfirm - Callback function to confirm the vote
+ * Props:
+ * - onClose - Callback function to close the popup without confirming
+ * - props.onConfirm - Callback function to confirm the vote
  */
 
 import './ConfirmVotePopup.css';
