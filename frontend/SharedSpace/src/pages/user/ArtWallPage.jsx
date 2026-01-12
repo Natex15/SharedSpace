@@ -71,8 +71,8 @@ export function ArtWallPage() {
                 date={activeArt?.date}
                 desc={activeArt?.description}
             />
-            <h1 className='text'>Art Wall</h1>
-            <p className='text'>See what the community's been creating lately 🎨</p>
+            <h1 className='aw-title'>Art Wall</h1>
+            <p className='aw-subtitle'>See what the community's been creating lately 🎨</p>
             <div className='artWallWrapper'>
                 <div className='artWall'>
                     {

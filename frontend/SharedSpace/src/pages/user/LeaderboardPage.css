@@ -26,10 +26,9 @@
 
 .leaderboard-container {
     max-width: 800px;
-    margin: 0 15vw ;
+    margin: 0 15vw;
     display: flex;
     flex-direction: column;
-    gap: 2px;
 }
 
 .leaderboard-item {
@@ -37,8 +36,13 @@
     padding: 20px 30px;
     display: flex;
     align-items: center;
-    border-radius: 12px;
+    border-radius: 0px !important;
     transition: transform 0.2s ease;
+    margin-bottom: -25px;
+}
+
+.leaderboard-item:first-child {
+    border-radius: 12px 12px 0 0 !important;
 }
 
 .leaderboard-item:hover {
@@ -83,27 +87,27 @@
     .leaderboard-title {
         font-size: 2rem;
     }
-
+    
     .leaderboard-item {
         padding: 15px 20px;
     }
-
+    
     .rank-number {
         font-size: 1.5rem;
         min-width: 30px;
         margin-right: 15px;
     }
-
+    
     .lb-profile-avatar {
         height: 50px;
         width: 50px;
         margin-right: 15px;
     }
-
+    
     .lb-user-name {
         font-size: 1.1rem;
     }
-
+    
     .lb-user-score {
         font-size: 1.3rem;
     }
