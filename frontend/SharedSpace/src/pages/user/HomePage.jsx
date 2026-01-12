@@ -7,20 +7,42 @@ import { SharePopup } from '../../components/SharePopup';
 import Share from '../../assets/ShareYourDay.svg'
 import SampleImg from '../../assets/SharedSpaceLogo.svg'
 import SampleImg2 from '../../assets/react.svg'
+import PlaceDuTertre from '../../assets/arts/placedutertre.jpg'
+import AugustRenoir from '../../assets/arts/augustrenoire.jpg'
+import CafeNight from '../../assets/arts/cafenight.jpg'
+import WaterLilies from '../../assets/arts/waterlilies.jpg'
+import Almond from '../../assets/arts/almondtree.jpg';
+import Girl from '../../assets/arts/girlwithpearlearrings.jpg';
+import Lemo from '../../assets/arts/lemoulin.jpg';
+import Nippon from '../../assets/arts/nippon.jpg';
+import Sakura from '../../assets/arts/sakura.jpg';
+import Ukiyo from '../../assets/arts/ukiyo.jpg';
 
 export function HomePage() {
     const artWorks = [
-        { img: SampleImg, date: "1/1/2026", description: "lorem ipsum dolor", author: "Nname" },
-        { img: SampleImg2, date: "1/4/2026", description: "lorem ipsum dolor", author: "Nname" },
-        { img: SampleImg2, date: "1/6/2026", description: "lorem ipsum dolor", author: "Cname" },
-        { img: SampleImg, date: "1/4/2026", description: "lorem ipsum dolor", author: "Dname" },
+        { img: PlaceDuTertre, date: "1/1/2026", description: "Place du Tertre", author: "Nname" },
+        { img: AugustRenoir, date: "1/4/2026", description: "August Renoir", author: "Nname" },
+        { img: CafeNight, date: "1/6/2026", description: "Cafe Terrace at Night", author: "Cname" },
+        { img: WaterLilies, date: "1/4/2026", description: "Water Lilies", author: "Dname" },
+    ];
+
+    const artWallWorks = [
+        { img: Almond, date: "1/3/2026", description: "Almond Tree" },
+        { img: AugustRenoir, date: "1/4/2026", description: "August Renoir" },
+        { img: CafeNight, date: "1/5/2026", description: "Cafe Night" },
+        { img: Girl, date: "1/4/2026", description: "Girl with a Pearl Earring" },
+        { img: Lemo, date: "1/5/2026", description: "Le Moulin de la Galette" },
+        { img: Nippon, date: "1/4/2026", description: "Nippon" },
+        { img: Sakura, date: "1/5/2026", description: "Sakura" },
+        { img: Ukiyo, date: "1/4/2026", description: "Sunday Afternoon / Ukiyo" },
+        { img: WaterLilies, date: "1/5/2026", description: "Water Lilies" }
     ];
     //note: need isort based on date
     const friends_artWorks = [
-        { img: SampleImg, date: "1/1/2026", description: "lorem ipsum dolor", author: "Nname" },
-        { img: SampleImg2, date: "1/4/2026", description: "lorem ipsum dolor", author: "Nname" },
-        { img: SampleImg2, date: "1/6/2026", description: "lorem ipsum dolor", author: "Cname" },
-        { img: SampleImg, date: "1/4/2026", description: "lorem ipsum dolor", author: "Dname" },
+        { img: WaterLilies, date: "1/1/2026", description: "Water Lilies", author: "Claude Monet" },
+        { img: PlaceDuTertre, date: "1/4/2026", description: "Place du Tertre", author: "Artist" },
+        { img: AugustRenoir, date: "1/6/2026", description: "August Renoir", author: "Artist" },
+        { img: CafeNight, date: "1/4/2026", description: "Cafe Terrace at Night", author: "Artist" },
     ];
 
     const leaderboardData = [
@@ -109,7 +131,7 @@ export function HomePage() {
                     />
                 </div>
                 <div className='artWallGrid'>
-                    {artWorks.slice(0, 8).map((art, index) => (
+                    {artWallWorks.slice(0, 8).map((art, index) => (
                         <div key={index} className='artWallCard' onClick={() => setActiveArt(art)}>
                             <img src={art.img} alt={art.description} className='artWallImage'></img>
                         </div>
