@@ -1,0 +1,27 @@
+.streak-badge {
+    position: relative;
+    width: 150px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: -35px;
+    z-index: 10;
+}
+
+.streak-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.streak-number {
+    position: relative;
+    z-index: 1;
+    font-size: 30px;
+    font-weight: bold;
+    color: #5C5A7B;
+    margin-top: 1px;
+    margin-left: 2.5rem;
+}

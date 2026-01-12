@@ -1,8 +1,10 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './SharePopup.css';
 import { BorderedButton } from './BorderedButton';
 
 export function SharePopup({ trigger, setTrigger }) {
+    const navigate = useNavigate();
     const [files, setFiles] = useState([]);
     const [fileName, setFileName] = useState('File Name 1');
     const [isPublic, setIsPublic] = useState(true);
@@ -46,6 +48,7 @@ export function SharePopup({ trigger, setTrigger }) {
         });
 
         handleClose();
+        navigate('/home-posted');
     };
 
     const handleFileSelect = (e) => {
