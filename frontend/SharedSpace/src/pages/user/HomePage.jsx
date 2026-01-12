@@ -39,6 +39,7 @@ export function HomePage() {
     ];
     //note: need isort based on date
     const friends_artWorks = [
+        { img: Almond, date: "1/3/2026", description: "Almond Tree", author: "Vincent van Gogh" },
         { img: WaterLilies, date: "1/1/2026", description: "Water Lilies", author: "Claude Monet" },
         { img: PlaceDuTertre, date: "1/4/2026", description: "Place du Tertre", author: "Artist" },
         { img: AugustRenoir, date: "1/6/2026", description: "August Renoir", author: "Artist" },
@@ -58,9 +59,7 @@ export function HomePage() {
         { id: 4, name: "# OneColor" },
     ];
 
-    const randomIndex = Math.floor(Math.random() * friends_artWorks.length)
-
-    const friendArt = friends_artWorks[randomIndex]
+    const friendArt = friends_artWorks[0] // Specifically set to Almond Tree
 
     const [activeArt, setActiveArt] = useState(null);
     const [showSharePopup, setShowSharePopup] = useState(false);

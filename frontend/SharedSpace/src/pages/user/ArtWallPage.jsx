@@ -10,6 +10,13 @@ import Nippon from '../../assets/arts/nippon.jpg';
 import Sakura from '../../assets/arts/sakura.jpg';
 import Sunday from '../../assets/arts/ukiyo.jpg';
 import WaterLily from '../../assets/arts/waterlilies.jpg'
+import Canvas from '../../assets/arts/canvas.jpg';
+import Dogs from '../../assets/arts/dogs.jpg';
+import France from '../../assets/arts/france.jpg';
+import Tertre from '../../assets/arts/placedutertre.jpg';
+import StSiffret from '../../assets/arts/stsiffret.jpg';
+import SundayReal from '../../assets/arts/sunday.jpg';
+import CherryBlossom from '../../assets/arts/cherryblossom.jpg';
 
 export function ArtWallPage() {
     const artWorks = [
@@ -21,21 +28,28 @@ export function ArtWallPage() {
         { img: Nippon, date: "1/4/2026", description: "lorem ipsum dolor" },
         { img: Sakura, date: "1/5/2026", description: "lorem ipsum dolor" },
         { img: Sunday, date: "1/4/2026", description: "lorem ipsum dolor" },
-        { img: WaterLily, date: "1/5/2026", description: "lorem ipsum dolor" }
+        { img: WaterLily, date: "1/5/2026", description: "lorem ipsum dolor" },
+        { img: Canvas, date: "1/6/2026", description: "Community Canvas" },
+        { img: Dogs, date: "1/7/2026", description: "Playful Dogs" },
+        { img: France, date: "1/8/2026", description: "French Landscape" },
+        { img: Tertre, date: "1/9/2026", description: "Place du Tertre" },
+        { img: StSiffret, date: "1/10/2026", description: "Saint Siffret" },
+        { img: SundayReal, date: "1/11/2026", description: "A Sunday Afternoon" },
+        { img: CherryBlossom, date: "1/12/2026", description: "Cherry Blossom" }
     ]
     const [activeArt, setActiveArt] = useState(null);
-    
+
     useEffect(() => {
         const resizeGridItem = (item, img) => {
             const grid = document.querySelector('.artWall');
             const rowHeight = parseInt(window.getComputedStyle(grid).getPropertyValue('grid-auto-rows'));
             const rowGap = parseInt(window.getComputedStyle(grid).getPropertyValue('gap'));
-            
+
             // Calculate the aspect ratio and determine height
             const width = item.offsetWidth;
             const aspectRatio = img.naturalWidth / img.naturalHeight;
             const calculatedHeight = width / aspectRatio;
-            
+
             const rowSpan = Math.ceil((calculatedHeight + rowGap) / (rowHeight + rowGap));
             item.style.gridRowEnd = `span ${rowSpan}`;
             item.style.height = `${calculatedHeight}px`;
@@ -77,8 +91,8 @@ export function ArtWallPage() {
                 <div className='artWall'>
                     {
                         artWorks.map((art, index) => (
-                            <div 
-                                className='artWorkItem' 
+                            <div
+                                className='artWorkItem'
                                 key={index}
                                 onClick={() => { setActiveArt(art) }}
                             >
