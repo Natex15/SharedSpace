@@ -8,12 +8,10 @@ import SharedSpaceLogo from '../assets/SharedSpaceLogo.svg'
 export function ModNavigationBar({ onSignOut, hasNewNotifications, onNotifications }) {
     return (
         <nav className='navbar'>
-            {/* Logo redirects to home page. */}
-            <Link to="/home">
-                <div className='navbar-component-logo'>
-                    <img src={SharedSpaceLogo} alt="Shared Space" height="55" width="55" className="navbar-logo" />
-                </div>
-            </Link>
+            {/* Shared Space logo. */}
+            <div className='navbar-component-logo'>
+                <img src={SharedSpaceLogo} alt="Shared Space" height="55" width="55" className="navbar-logo" />
+            </div>
 
             {/* Icons in navbar's center. */}
             <div className='center-name'>
