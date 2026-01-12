@@ -1,15 +1,15 @@
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box; 
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-.home{
+.home {
     display: flex;
     flex-direction: column;
 }
 
-.share{
+.share {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -17,28 +17,28 @@
     overflow: hidden;
     background-color: #FAF3EB;
     padding-bottom: 3rem;
-    z-index: 5;      
+    z-index: 5;
 }
 
-.shareButton{
+.shareButton {
     margin-top: 10px;
-    
+
 }
 
-.Logo2{
+.Logo2 {
     flex: 1;
     margin-bottom: -2rem;
     margin-top: 2rem;
 }
 
-.logo2container{
+.logo2container {
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
 
-.works{
+.works {
     justify-content: center;
     text-align: center;
     height: auto;
@@ -47,7 +47,7 @@
     z-index: 6;
 }
 
-.worksText{
+.worksText {
     margin: 2rem;
     font-style: bold;
     color: #5C5A7B;
@@ -61,7 +61,7 @@
     margin-bottom: 60px;
     padding: 0 20px;
     background-color: #EDA8A8;
-    
+
 }
 
 .art-card {
@@ -89,7 +89,7 @@
 }
 
 
-.friends{
+.friends {
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -99,8 +99,10 @@
     z-index: 5;
 }
 
-.friend-card{
+.friend-card {
     border-radius: 20px;
+    overflow: hidden;
+    cursor: pointer;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
     margin: 6rem;
@@ -116,12 +118,12 @@
     box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
 }
 
-.friends-text-area{
+.friends-text-area {
     display: flex;
     flex-direction: column;
 }
 
-.friendsText{
+.friendsText {
     color: #FFE2E2;
     font-size: 60px;
     font-style: bold;
@@ -130,7 +132,7 @@
     margin-bottom: 1rem;
 }
 
-.friendsButton{
+.friendsButton {
     color: #FFE2E2;
 
 }
