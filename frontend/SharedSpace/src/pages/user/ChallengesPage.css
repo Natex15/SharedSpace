@@ -1,3 +1,9 @@
+/* 
+ * ChallengesPage.css
+ * This stylesheet handles the layout and design for the Challenges Page,
+ * including the main challenge banner, friends activity section, and the voting interface.
+ */
+
 .challenges-page {
     display: flex;
     flex-direction: column;
@@ -41,6 +47,10 @@
     box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
 }
 
+.challenge-tag:hover {
+    transform: translateY(-5px);
+}
+
 .challenge-content {
     display: flex;
     width: 100%;
@@ -64,6 +74,10 @@
     font-size: 1.2rem;
     line-height: 1.6;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.description-box:hover {
+    transform: translateY(-5px);
 }
 
 .circles-container {
@@ -151,4 +165,107 @@
     .friends-challenge-text {
         font-size: 2rem;
     }
+}
+
+/* Voting Area Styles */
+.voting-area {
+    background-color: #FAF3EB;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.voting-area .main-title {
+    color: #000;
+}
+
+.voting-subtitle {
+    margin-bottom: 30px;
+    font-family: 'Poppins', sans-serif;
+    color: #5C5A7B;
+}
+
+.voting-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.artwork-display {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    height: 320px;
+    width: 100%;
+    overflow: hidden;
+}
+
+.artwork-card {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    background-color: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transition: all 0.5s ease-in-out;
+}
+
+.artwork-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.voting-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.nav-arrow {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #341539;
+    transition: transform 0.2s;
+}
+
+.nav-arrow:hover {
+    transform: scale(1.2);
+}
+
+.voting-categories {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.category-button-wrapper {
+    transition: opacity 0.2s;
+    cursor: pointer;
+}
+
+.no-artworks-message {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.5rem;
+    color: #5C5A7B;
+}
+
+/* Error Message */
+.error-message {
+    color: #D32F2F;
+    background-color: #FFEBEE;
+    padding: 1rem;
+    border-radius: 12px;
+    margin: 1rem 0;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    text-align: center;
+    border: 1px solid #EF9A9A;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }

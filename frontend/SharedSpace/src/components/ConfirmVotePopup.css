@@ -1,0 +1,71 @@
+.vote-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.vote-popup {
+    background-color: white;
+    padding: 30px;
+    border-radius: 20px;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    animation: popupFadeIn 0.3s ease;
+}
+
+@keyframes popupFadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.vote-popup h2 {
+    color: #341539;
+    margin-bottom: 15px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.vote-popup p {
+    margin-bottom: 25px;
+    color: #5C5A7B;
+    font-family: 'Poppins', sans-serif;
+}
+
+.vote-popup-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.popup-button {
+    padding: 10px 25px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    transition: transform 0.2s;
+}
+
+.popup-button:hover {
+    transform: translateY(-2px);
+}
+
+.popup-confirm {
+    background-color: #EDA8A8;
+    color: white;
+}
+
+.popup-cancel {
+    background-color: #e0e0e0;
+    color: #555;
+}
