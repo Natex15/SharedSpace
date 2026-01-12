@@ -1,7 +1,7 @@
 import './SignOutPopup.css'
 import { Link } from 'react-router-dom'
 
-export function SignOutPopup({ onClose }) {
+export function SignOutPopup({ onClose, onLogout }) {
     return (
         <div className="sign-out-popup-card">
             <div className = "sign-out-popup">
@@ -14,7 +14,7 @@ export function SignOutPopup({ onClose }) {
                         Go Back
                     </button>
 
-                    <Link to="/login" className="sign-out-yes-button" onClick={onClose}>
+                    <Link to="/login" className="sign-out-yes-button" onClick={onLogout}>
                         Sign Out
                     </Link>
                 </div>   

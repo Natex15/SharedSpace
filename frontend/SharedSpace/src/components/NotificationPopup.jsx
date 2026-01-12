@@ -1,6 +1,5 @@
 import './NotificationPopup.css'
 
-
 export function NotificationPopup({ onClose }) {
     return (
         <div className="notification-popup-card">
@@ -14,10 +13,10 @@ export function NotificationPopup({ onClose }) {
                 </div>
 
                 <ul className="notification-popup-list">
-                    <li>
+                    <li className="notification-unread">
                         <div className = "notification-info">
                             <div className="notification-type">
-                                notification type
+                                unread notif
                             </div>
 
                             <div className="notification-time">
@@ -30,10 +29,10 @@ export function NotificationPopup({ onClose }) {
                         </div>
                     </li>
 
-                    <li>
+                    <li className="notification-unread">
                         <div className = "notification-info">
                             <div className="notification-type">
-                                notification type
+                                unread notif
                             </div>
 
                             <div className="notification-time">
@@ -42,6 +41,38 @@ export function NotificationPopup({ onClose }) {
                         </div>
 
                         <div className="notification-content">
+                            notification content
+                        </div>
+                    </li>
+
+                    <li className="notification-read">
+                        <div className="notification-info-read">
+                            <div className="notification-type-read">
+                                read notif
+                            </div>
+
+                            <div className="notification-time-read">
+                                time passed
+                            </div>
+                        </div>
+
+                        <div className="notification-content-read">
+                            notification content
+                        </div>
+                    </li>
+
+                    <li className="notification-read">
+                        <div className="notification-info-read">
+                            <div className="notification-type-read">
+                                read notif
+                            </div>
+
+                            <div className="notification-time-read">
+                                time passed
+                            </div>
+                        </div>
+
+                        <div className="notification-content-read">
                             notification content
                         </div>
                     </li>

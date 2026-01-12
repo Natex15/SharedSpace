@@ -55,10 +55,16 @@ function App() {
         <Route path="challenges" element={<ChallengesPage />} />
       </Routes>
 
-      {showSignOutPopup && <SignOutPopup onClose={() => setShowSignOutPopup(false)} />}
-        {showNotifications && (
-  <NotificationPopup onClose={() => setShowNotifications(false)} />
-)}
+      {showSignOutPopup && (
+        <SignOutPopup
+          onClose={() => setShowSignOutPopup(false)}
+          onLogout={() => {
+          setShowSignOutPopup(false);
+          setShowNotifications(false);
+        }} />
+      )}
+
+      {showNotifications && (<NotificationPopup onClose={() => setShowNotifications(false)} />)}
 
     </>
   )

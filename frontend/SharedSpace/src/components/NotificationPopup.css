@@ -1,25 +1,26 @@
 .notification-popup-card {
-    align-items: flex-start;
-    display: flex;
-    inset: 0;
-    justify-content: flex-end;
-    position: fixed;
-    z-index: 2000;
-}
-
-.notification-popup {
-    background: rgba(75,72,110,0.67);
+    background: rgba(75,72,110,0.67); 
     border-radius: 8px;
-    box-shadow: 8px 8px 12px rgba(0,0,0,0.2);
-    margin: 1rem;
-    padding: 1rem;
-    width: 300px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;
+    max-height: 350px;
+    overflow-y: auto;
+    position: fixed;
+    right: 20px;
+    top: 103px;
+    z-index: 2000;
     transition: box-shadow 0.25s ease, transform 0.25s ease;
 }
 
-.notification-popup:hover {
-    box-shadow: 8px 8px 12px rgba(0,0,0,0.25);
-    transform: scale(1.05);
+.notification-popup-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    transform: scale(1.033);
+}
+
+.notification-popup {
+    padding: 1rem;
+    width: 300px;
 }
 
 .notification-popup-top {
@@ -30,28 +31,64 @@
 }
 
 .notification-popup-header {
-    color: white;
+    color: #FAF3EB;
+    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.2));
+    font-size: 1.25rem;
     font-weight: bold;
+    margin: 0.4rem 0 0 0;
+    transition: filter 0.25s ease;
+}
+
+.notification-popup-header:hover {
+    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.33));
 }
 
 .notification-popup-list {
     list-style: none;
+    max-height: 250px;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+.notification-popup-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.notification-popup-list::-webkit-scrollbar-thumb {
+    background: #FAF3EB;
+    border-radius: 8px;
+}
+
+.notification-popup-list::-webkit-scrollbar-thumb:hover {
+    background: #C4B5A4;
 }
 
 .notification-popup-list li {
     background: #FAF3EB;
     border-radius: 7px;
-    box-shadow: 8px 8px 12px rgba(0,0,0,0.1);
     color: #4B486E;
     font-size: 0.9rem;
-    margin: 1rem 0 0 0;
+    margin: 0 0 1rem 0;
     padding: 0.5rem 0.5rem 0.5rem 0.75rem;
-    transition: box-shadow 0.25s ease, transform 0.25s ease;
+    transition: background 0.25s ease, box-shadow 0.25s ease, color 0.25s ease;
 }
 
+.notification-popup-list li:last-child {
+    margin-bottom: 0;
+}
+
+
 .notification-popup-list li:hover {
-    box-shadow: 8px 8px 12px rgba(0,0,0,0.15);
-    transform: scale(1.033);
+    background: #C4B5A4;
+    color: #FAF3EB;
+}
+
+.notification-popup-list li .notification-time {
+    transition: color 0.25s ease;
+}
+
+.notification-popup-list li:hover .notification-time {
+    color: #FAF3EB;
 }
 
 .notification-close-button {
@@ -66,7 +103,10 @@
     font-weight: bold;
     margin-left: auto;
     padding: 6px 12px;
-    transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out, color 0.3s ease-in-out, transform 0.3s ease-in-out;
+    transition: background-color 0.3s ease-in-out, 
+                box-shadow 0.3s ease-in-out, 
+                color 0.3s ease-in-out, 
+                transform 0.3s ease-in-out;
 }
 
 .notification-close-button:hover {
@@ -78,19 +118,46 @@
 
 /* -------------------------------------------------- */
 
-.notification-info {
+.notification-read {
+    background: #CCC8D5 !important;
+    color: #78758e !important;
+    transition: background 0.25s ease, color 0.25s ease;
+}
+
+.notification-read:hover {
+    background: #a7a1b4 !important;
+}
+
+.notification-read .notification-type-read,
+.notification-read .notification-time-read,
+.notification-read .notification-content-read {
+    transition: color 0.25s ease;
+}
+
+.notification-read:hover .notification-type-read,
+.notification-read:hover .notification-time-read,
+.notification-read:hover .notification-content-read {
+    color: #FAF3EB;
+}
+
+.notification-info, .notification-info-read {
     align-items: center;
     display: flex;
     justify-content: center;
     margin: 0 0 0.5rem 0;
 }
 
-.notification-type {
+.notification-type, .notification-type-read {
     font-weight: bold;
 }
 
 .notification-time {
     color: #EDA8A8;
+    margin-left: auto;
+    margin-right: 3px;
+}
+
+.notification-time-read {
     margin-left: auto;
     margin-right: 3px;
 }
