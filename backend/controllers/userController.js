@@ -126,7 +126,7 @@ const findCurrentUser = async (req, res) => {
             userData.streakCount = 0;
         }
 
-        res.status(200).json(user);
+        res.status(200).json(userData);
     } catch (error) {
         console.error('Error fetching current user:', error);
         res.status(500).json({ message: 'Failed to fetch user.', error: error.message });
@@ -402,12 +402,18 @@ export const updateStreak = async (userId) => {
         const lastActivity = user.lastActivityDate;
 
         if (lastActivity) {
+            // Check if same day
+            if (now.toDateString() === lastActivity.toDateString()) {
+                user.lastActivityDate = now;
+                await user.save();
+                return;
+            }
+
             // Calculate difference in days
             const diffInTime = now.getTime() - lastActivity.getTime();
             const diffInDays = diffInTime / (1000 * 3600 * 24);
 
             if (diffInDays <= 7) {
-                // Uploaded within the week grace period!
                 user.streakCount += 1;
             } else {
                 // Streak over, reset to 1
@@ -424,6 +430,23 @@ export const updateStreak = async (userId) => {
         console.error("Streak Update Error:", err);
     }
 };
+
+export const streakCheckIn = async (req, res) => {
+    try {
+        await updateStreak(req.user.userId);
+
+        const user = await User.findById(req.user.userId)
+            .select('streakCount lastActivityDate');
+
+        res.json({
+            streakCount: user.streakCount,
+            lastActivityDate: user.lastActivityDate
+        });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to update streak' });
+    }
+};
+
 
 const getOutgoingRequests = async (req, res) => {
     try {

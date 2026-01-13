@@ -3,7 +3,7 @@ import { registerUser, loginUser, getRegisteredUsers,
     sendFriendRequest, acceptFriendRequest, declineFriendRequest, 
     removeFriend, getFriendsList, getPendingRequests,
     findByUserEmail, findByUsername, deleteUser, updateUser, findCurrentUser,
-    getOutgoingRequests, cancelOutgoingRequest
+    getOutgoingRequests, cancelOutgoingRequest, streakCheckIn
 } from '../controllers/userController.js'; 
 import { isAdmin, verifyToken } from '../middleware/auth.js'; 
 
@@ -17,6 +17,7 @@ router.get('/all', verifyToken, isAdmin, getRegisteredUsers);
 router.get('/me', verifyToken, findCurrentUser);
 router.put('/update', verifyToken, updateUser);
 router.post('/find', verifyToken, findByUserEmail);
+router.put('/streak', verifyToken, streakCheckIn);
 router.post('/findByUsername', verifyToken, findByUsername);
 router.delete('/delete', verifyToken, isAdmin, deleteUser);
 

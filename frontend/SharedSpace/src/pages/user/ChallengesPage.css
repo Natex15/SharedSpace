@@ -45,6 +45,7 @@
     font-size: 2rem;
     font-weight: 700;
     box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
 }
 
 .challenge-tag:hover {
@@ -74,6 +75,7 @@
     font-size: 1.2rem;
     line-height: 1.6;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
 }
 
 .description-box:hover {

@@ -100,62 +100,66 @@ export function EditProfilePopup({ isOpen, onClose, user, onSave }) {
     if (!isOpen) return null;
 
     return (
-        <div className="edit-popup-overlay">
-            <div className="edit-popup">
-                <h2>Edit Profile</h2>
-                <form onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <label>Username</label>
-                        <input
-                            type="text"
-                            name="username"
-                            value={formData.username}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Bio</label>
-                        <textarea
-                            name="bio"
-                            value={formData.bio}
-                            onChange={handleChange}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Profile Picture</label>
-                        <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleFileChange}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>New Password (optional)</label>
-                        <input
-                            type="password"
-                            name="password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            placeholder="Leave blank to keep current"
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Confirm Password</label>
-                        <input
-                            type="password"
-                            name="confirmPassword"
-                            value={formData.confirmPassword}
-                            onChange={handleChange}
-                            placeholder="Confirm new password"
-                            disabled={!formData.password}
-                        />
-                    </div>
-                    <div className="edit-popup-buttons">
-                        <BorderedButton message="Save Changes" size="pink" type="submit" onClick={() => {}} />
-                        <BorderedButton message="Cancel" size="pink" onClick={onClose} />
-                    </div>
-                </form>
+        <div className="edit-popup-overlay" onClick={onClose}>
+            <div className="edit-popup-container" onClick={(e) => e.stopPropagation()}>
+                <div className="edit-header">
+                    <h2>Edit Profile</h2>
+                </div>
+                <div className="edit-body">
+                    <form onSubmit={handleSubmit}>
+                        <div className="form-group">
+                            <label>Username</label>
+                            <input
+                                type="text"
+                                name="username"
+                                value={formData.username}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Bio</label>
+                            <textarea
+                                name="bio"
+                                value={formData.bio}
+                                onChange={handleChange}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Profile Picture</label>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleFileChange}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>New Password (optional)</label>
+                            <input
+                                type="password"
+                                name="password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                placeholder="Leave blank to keep current"
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Confirm Password</label>
+                            <input
+                                type="password"
+                                name="confirmPassword"
+                                value={formData.confirmPassword}
+                                onChange={handleChange}
+                                placeholder="Confirm new password"
+                                disabled={!formData.password}
+                            />
+                        </div>
+                        <div className="edit-popup-buttons">
+                            <BorderedButton message="Save Changes" size="pink" type="submit" onClick={() => {}} />
+                            <BorderedButton message="Cancel" size="pink" onClick={onClose} />
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     );

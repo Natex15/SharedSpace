@@ -75,6 +75,16 @@ export function SharePopup({ trigger, setTrigger }) {
             }
         }
 
+        // Update streak after sharing artwork
+        try {
+            await fetch('http://localhost:3000/api/users/streak', {
+                method: 'PUT',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+        } catch (error) {
+            console.error('Error updating streak:', error);
+        }
+
         handleClose();
         navigate('/home-posted');
     };
