@@ -43,7 +43,7 @@ const deleteUser = async (req, res, next) => {
 const updateUser = async (req, res, next) => {
     try {
         // Not all fields included, only those that can be modified by users
-        const { username, profilePicture, password } = req.body;
+        const { username, profilePicture, bio, password } = req.body;
         
         // create an object to hold only the fields to update
         const fieldsToUpdate = {};
@@ -54,27 +54,25 @@ const updateUser = async (req, res, next) => {
         if (profilePicture) {
             fieldsToUpdate.profilePicture = profilePicture;
         }
+        if (req.body.bio !== undefined){
+            fieldsToUpdate.bio = bio;
+        }
         // If a new password is provided, rehash again
         if (password) {
             fieldsToUpdate.password = await bcrypt.hash(password, 10);
         }
 
-        const updatedUser = await User.findOneAndUpdate(
-            { email: req.body.email },
+        const updatedUser = await User.findByIdAndUpdate(
+            currentUserId, // Find by token ID, not body email
             { $set: fieldsToUpdate },
-            { new: true }
-        );
+            { new: true, runValidators: true } // runValidators ensures bio length 
+        ).select("-password"); // This is a Mongoose shortcut to exclude the password automatically
+
         if (!updatedUser) {
-            return res.status(404).send("User not found");
+            return res.status(404).json({ message: "User not found" });
         }
-        // Password removed for the response
-        const userResponse = {
-            _id: updatedUser._id,
-            username: updatedUser.username,
-            email: updatedUser.email,
-            profilePicture: updatedUser.profilePicture
-        };
-        res.status(200).json(userResponse);
+
+        res.status(200).json(updatedUser);
     } catch (err) {
         console.error('Error updating user:', err);
         res.status(500).json({ message: "Unable to update user", error: err.message });
@@ -173,7 +171,7 @@ const loginUser = async (req, res) => {
 //get registered users
 const getRegisteredUsers = async (req, res) => {
     try {
-        const users = await User.find();
+        const users = await User.find({}).select('-password -email -__v');
         res.status(200).json({ users });
     } catch {
         res.status(500).json({ error: 'Unable to get users.' });

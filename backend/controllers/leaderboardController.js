@@ -25,6 +25,30 @@ const getTopArtworks = async (req, res, next) => {
     }
 };
 
+//get users with most streaks
+const getStreakLeaders =  async (req, res, next) =>{
+    try {
+        const topSteaks = await User.aggregate([
+            { $match: { streakCount: { $gt: 0 } } }, // Only users with an active streak
+            { $sort: { streakCount: -1 } },          // Highest streak first
+            { $limit: 10 },                          // Top 10 users
+            {
+                $project: {
+                    username: 1,
+                    streakCount: 1,
+                    profilePicture: 1,
+                    badges: 1, // Show off their achievements
+                    _id: 0     // Hide ID if not needed for the UI
+                }
+            }
+        ]);
+
+        res.status(200).json(topSteaks);
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching streak leaderboard", error: error.message });
+    }
+};
+
 // top users
 const getTopUsers = async (req, res, next) => {
     const limit = parseInt(req.query.limit) || 10;
@@ -58,10 +82,12 @@ const getArtworkRank = async (req, res, next) => {
 
     try {
         const ranking = await Vote.aggregate([
+            // get scores of each artwork and rank them
             { $group: { _id: "$artworkID", totalScore: { $sum: "$score" } } },
             { $sort: { totalScore: -1 } }
         ]);
 
+        // find rank of artwork
         const index = ranking.findIndex(item => item._id.toString() === artworkID);
         if (index === -1) return res.status(404).send("Artwork not found in leaderboard");
 

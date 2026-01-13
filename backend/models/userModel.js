@@ -28,6 +28,11 @@ const userSchema = new mongoose.Schema({
   profilePicture: { 
     type: String 
   },
+  bio: {
+    type: String,
+    maxlength: [100, "Bio cannot exceed 100 characters"], // Backend limit + Custom error message
+    trim: true
+  },
   streakCount: { 
     type: Number, 
     default: 0 
