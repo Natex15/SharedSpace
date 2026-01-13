@@ -1,114 +1,256 @@
-.leaderboardBody {
-    background: linear-gradient(180deg, #FDD9D7 0%, #FAF3EB 100%);
-    min-height: 100vh;
-    width: 100vw;
-    padding: 40px 20px;
-    box-sizing: border-box;
+.lb-current-leaderboardBody {
+    background: linear-gradient(180deg, #FDD9D7 0%, #FAF3EB 100%) !important;
+    min-height: 100vh !important;
+    width: 100vw !important;
+    padding: 80px 20px 40px 20px !important;
+    box-sizing: border-box !important;
 }
 
-.leaderboard-title {
-    text-align: center;
-    font-family: 'Poppins', sans-serif;
-    color: #341539;
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 10px;
+.lb-current-leaderboard-title {
+    text-align: center !important;
+    font-family: 'Poppins', sans-serif !important;
+    color: #341539 !important;
+    font-size: 2.5rem !important;
+    font-weight: 700 !important;
+    margin-bottom: 40px !important;
 }
 
-.leaderboard-subtitle {
-    text-align: center;
-    font-family: 'Poppins', sans-serif;
-    color: #341539;
-    font-size: 1rem;
-    font-weight: 400;
-    margin-bottom: 30px;
+.lb-current-leaderboard-wrapper {
+    display: flex !important;
+    gap: 80px !important;
+    max-width: 1400px !important;
+    margin: 0 auto !important;
+    padding: 0 20px !important;
+    position: relative !important;
+    justify-content: center !important;
+    align-items: flex-start !important;
 }
 
-.leaderboard-container {
-    max-width: 800px;
-    margin: 0 15vw;
-    display: flex;
-    flex-direction: column;
+.lb-current-leaderboard-section {
+    flex: 0 0 auto !important;
+    width: 500px !important;
 }
 
-.leaderboard-item {
-    width: 65vw;
-    padding: 20px 30px;
-    display: flex;
-    align-items: center;
+.lb-current-section-title {
+    text-align: center !important;
+    font-family: 'Poppins', sans-serif !important;
+    color: #341539 !important;
+    font-size: 1.2rem !important;
+    font-weight: 600 !important;
+    margin-bottom: 20px !important;
+}
+
+.lb-current-leaderboard-container {
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.lb-current-leaderboard-item {
+    padding: 20px 30px !important;
+    display: flex !important;
+    align-items: center !important;
     border-radius: 0px !important;
-    transition: transform 0.2s ease;
-    margin-bottom: -25px;
+    transition: transform 0.2s ease !important;
+    margin-bottom: -25px !important;
 }
 
-.leaderboard-item:first-child {
+.lb-current-leaderboard-item:first-child {
     border-radius: 12px 12px 0 0 !important;
 }
 
-.leaderboard-item:hover {
-    transform: translateX(5px);
+.lb-current-leaderboard-item:last-child {
+    border-radius: 0 0 12px 12px !important;
+    margin-bottom: 0 !important;
 }
 
-.rank-number {
-    font-family: 'Poppins', sans-serif;
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: #341539;
-    min-width: 40px;
-    margin-right: 20px;
+.lb-current-leaderboard-item:hover {
+    transform: translateX(5px) !important;
 }
 
-.lb-profile-avatar {
-    height: 60px;
-    width: 60px;
-    border-radius: 50%;
-    margin-right: 20px;
-    object-fit: cover;
+.lb-current-rank-number {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 1.8rem !important;
+    font-weight: 700 !important;
+    color: #341539 !important;
+    min-width: 40px !important;
+    margin-right: 20px !important;
 }
 
-.lb-user-name {
-    font-family: 'Poppins', sans-serif;
-    font-size: 1.3rem;
-    font-weight: 600;
-    color: #341539;
-    flex-grow: 1;
+.lb-current-profile-avatar {
+    height: 60px !important;
+    width: 60px !important;
+    border-radius: 50% !important;
+    margin-right: 20px !important;
+    object-fit: cover !important;
 }
 
-.lb-user-score {
-    font-family: 'Poppins', sans-serif;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #341539;
-    margin-left: auto;
+.lb-current-user-name {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 1.3rem !important;
+    font-weight: 600 !important;
+    color: #341539 !important;
+    flex-grow: 1 !important;
+}
+
+.lb-current-user-score {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+    color: #341539 !important;
+    margin-left: auto !important;
+}
+
+/* Artwork Section Styles - Podium Layout */
+.lb-current-artwork-podium {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 15px !important;
+    justify-content: center !important;
+    align-items: flex-start !important;
+    padding-top: 20px !important;
+    position: relative !important;
+    min-height: 380px !important;
+}
+
+.lb-current-artwork-item {
+    padding: 20px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 12px !important;
+    border-radius: 20px !important;
+    transition: transform 0.3s ease !important;
+    width: 170px !important;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15) !important;
+    position: absolute !important;
+}
+
+/* 2nd Place - Left side, middle position */
+.lb-current-artwork-second {
+    background-color: #EF8C8C !important;
+    left: 0 !important;
+    bottom: 0 !important;
+    height: 300px;
+}
+
+/* 1st Place - Center, highest position */
+.lb-current-artwork-first {
+    background-color: #CB6D6D!important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    bottom: 0px !important;
+    height: 350px;
+}
+
+/* 3rd Place - Right side, lowest position */
+.lb-current-artwork-third {
+    background-color: #EDA8A8 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    height: 250px;
+}
+
+.lb-current-artwork-item:hover {
+    transform: translateY(-10px) !important;
+}
+
+.lb-current-artwork-first:hover {
+    transform: translateX(-50%) translateY(-10px) !important;
+}
+
+.lb-current-artwork-image {
+    width: 150px !important;
+    height: 150px !important;
+    object-fit: cover !important;
+    border-radius: 16px !important;
+    flex-shrink: 0 !important;
+}
+
+.lb-current-artwork-votes {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 1.1rem !important;
+    font-weight: 700 !important;
+    color: #341539 !important;
+    text-align: center !important;
 }
 
 /* Responsive Design */
+@media (max-width: 1024px) {
+    .lb-current-leaderboard-wrapper {
+        flex-direction: column !important;
+        gap: 60px !important;
+        align-items: center !important;
+    }
+    
+    .lb-current-leaderboard-section {
+        width: 100% !important;
+        max-width: 500px !important;
+    }
+}
+
 @media (max-width: 768px) {
-    .leaderboard-title {
-        font-size: 2rem;
+    .lb-current-leaderboard-title {
+        font-size: 2rem !important;
     }
     
-    .leaderboard-item {
-        padding: 15px 20px;
+    .lb-current-leaderboard-item {
+        padding: 15px 20px !important;
     }
     
-    .rank-number {
-        font-size: 1.5rem;
-        min-width: 30px;
-        margin-right: 15px;
+    .lb-current-rank-number {
+        font-size: 1.5rem !important;
+        min-width: 30px !important;
+        margin-right: 15px !important;
     }
     
-    .lb-profile-avatar {
-        height: 50px;
-        width: 50px;
-        margin-right: 15px;
+    .lb-current-profile-avatar {
+        height: 50px !important;
+        width: 50px !important;
+        margin-right: 15px !important;
     }
     
-    .lb-user-name {
-        font-size: 1.1rem;
+    .lb-current-user-name {
+        font-size: 1.1rem !important;
     }
     
-    .lb-user-score {
-        font-size: 1.3rem;
+    .lb-current-user-score {
+        font-size: 1.3rem !important;
+    }
+
+    .lb-current-artwork-podium {
+        padding-top: 20px !important;
+        min-height: 350px !important;
+        position: relative !important;
+    }
+
+    .lb-current-artwork-item {
+        width: 100px !important;
+        padding: 15px !important;
+        position: absolute !important;
+    }
+
+    .lb-current-artwork-second {
+        left: 10px !important;
+        bottom: 0 !important;
+    }
+
+    .lb-current-artwork-first {
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        bottom: 50px !important;
+    }
+
+    .lb-current-artwork-third {
+        right: 10px !important;
+        bottom: 0 !important;
+    }
+
+    .lb-current-artwork-image {
+        width: 80px !important;
+        height: 80px !important;
+    }
+
+    .lb-current-artwork-votes {
+        font-size: 0.9rem !important;
     }
 }
