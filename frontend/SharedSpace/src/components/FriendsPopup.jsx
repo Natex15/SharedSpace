@@ -1,72 +1,215 @@
-// For the sign-out popup.
+// For the friends popup.
 import './FriendsPopup.css';                             // Import CSS.
-import React, { useState } from 'react';
-import SampleImg from '../assets/arts/ukiyo.jpg';
-import SampleImg2 from '../assets/arts/almondtree.jpg';
+import React, { useState, useEffect } from 'react';
 
 // ____________________________________________________________________________________________________
+
+const BASE_URL = 'http://localhost:5000'
+
+function authHeaders() {
+    const token = localStorage.getItem('token');
+
+    return {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+    };
+};
+
+async function getFriends() {
+    const res = await fetch(`${BASE_URL}/api/users/friends`, {
+        headers: authHeaders()
+    });
+
+    return res.json();
+};
+
+async function getPendingRequests() {
+    const res = await fetch(`${BASE_URL}/api/users/friends/pending`, {
+        headers: authHeaders()
+    });
+
+    return res.json();
+};
+
+async function sendFriendRequest(friendId) {
+    const res = await fetch(`${BASE_URL}/api/users/friends/request`, {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({ friendId }),
+    });
+
+    return res.json();
+};
+
+async function acceptRequest(friendId) {
+    const res = await fetch(`${BASE_URL}/api/users/friends/accept`, {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({ friendId })
+    });
+
+    return res.json();
+};
+
+async function declineRequest(friendId) {
+    const res = await fetch(`${BASE_URL}/api/users/friends/decline`, {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({ friendId })
+    });
+
+    return res.json();
+};
+
+async function removeFriend(friendId) {
+    const res = await fetch(`${BASE_URL}/api/users/friends/remove`, {
+        method: 'DELETE',
+        headers: authHeaders(),
+        body: JSON.stringify({ friendId })
+    });
+
+    return res.json();
+};
+
+async function getOutgoingRequests() {
+    const res = await fetch(`${BASE_URL}/api/users/friends/outgoing`, {
+        headers: authHeaders()
+    });
+
+    return res.json();
+};
+
+async function cancelOutgoingRequest(requestId) {
+    const res = await fetch(`${BASE_URL}/api/users/friends/cancel`, {
+        method: 'DELETE',
+        headers: authHeaders(),
+        body: JSON.stringify({ requestId })
+    });
+
+    return res.json();
+};
 
 export function FriendsPopup({ isOpen, onClose }) {
 
     // State for tab and search query.
-    const [activeTab, setActiveTab] = useState('Friend List');
-    const [searchQuery, setSearchQuery] = useState('');
+    const [activeTab, setActiveTab] = useState('Friend List');                     // State for active tab.
+    const [searchQuery, setSearchQuery] = useState('');                            // State for search query.
+    const [statusMessage, setStatusMessage] = useState('');                        // State for messages.
+    const [searchResults, setSearchResults] = useState([])                         // State for search queries.
+    const [friendsList, setFriendsList] = useState([])                             // State for friends.
+    const [friendRequests, setFriendRequests] = useState([])                       // State for friend requests.
+    const [outgoingRequests, setOutgoingRequests] = useState([])                   // State for outgoing friend requests.
 
-    // State for friends.
-    const [friendsList, setFriendsList] = useState([
-        { id: 1, username: 'Username1', avatar: SampleImg },
-        { id: 2, username: 'Username2', avatar: SampleImg2 },
-        { id: 3, username: 'Username3', avatar: SampleImg },
-        { id: 4, username: 'Username4', avatar: SampleImg2 },
-        { id: 5, username: 'Username5', avatar: SampleImg },
-        { id: 6, username: 'Username6', avatar: SampleImg2 },
-        { id: 7, username: 'Username7', avatar: SampleImg },
-    ])
+    const handleSearch = async (e) => {
+        e.preventDefault();
 
-    // State for friend requests.
-    const [friendRequests, setFriendRequests] = useState([
-        { id: 1, username: 'Username1', avatar: SampleImg },
-        { id: 2, username: 'Username2', avatar: SampleImg2 },
-        { id: 3, username: 'Username3', avatar: SampleImg },
-    ])
+        try {
+            const response = await fetch(`${BASE_URL}/api/users/findByUsername`, {
+                method: "POST",
+                headers: authHeaders(),
+                body: JSON.stringify({ username: searchQuery })
+            });
+            console.log("Search response status:", response.status);
+            const data = await response.json();
+            
+            setSearchResults(Array.isArray(data) ? data : [data]);
+        } catch (err) {
+            console.error("Error - unable to search:", err);
+        }
+    };
 
-    // State for outgoing friend requests.
-    const [outgoingRequests, setOutgoingRequests] = useState([
-        { id: 1, username: 'Username1', avatar: SampleImg },
-        { id: 2, username: 'Username2', avatar: SampleImg2 },
-        { id: 3, username: 'Username3', avatar: SampleImg },
-    ])
+    useEffect(() => {
+        if (!isOpen) return;
+
+        async function loadData() {
+            try {
+                const friends = await getFriends();
+                const requests = await getPendingRequests();
+                const outgoing = await getOutgoingRequests();
+
+                setFriendsList(friends);
+                setFriendRequests(requests);
+                setOutgoingRequests(outgoing);
+            } catch (err) {
+                console.error("Error loading data:", err);
+            }
+        };
+
+        loadData()
+    }, [isOpen])
+
+    // Function to handle sending friend requests.
+    const handleAddFriend = async (userId) => {
+        try {
+            const res = await sendFriendRequest(userId);
+            const updatedOutgoing = await getOutgoingRequests();
+
+            setOutgoingRequests(updatedOutgoing);
+            console.log("Sent friend request:", userId);
+
+            if (res.message === "Already friends.") {
+                setStatusMessage("You’re already friends with this user.");
+            } else if (res.message === "Request pending.") {
+                setStatusMessage("You’ve already sent a friend request to this user.");
+            } else if (res.message === "Friend request sent.") {
+                setStatusMessage("Friend request sent!");
+            } else {
+                setStatusMessage("Something unexpected happened.");
+            }
+        } catch (err) {
+            console.error("Error - Not able to friend request:", err);
+        }
+    };
 
     // Function handling accepted friend requests.
-    const handleAcceptRequest = (id) => {
-        const acceptedRequest = friendRequests.find(req => req.id === id)          // Find request to accept.
-        const newRequests = friendRequests.filter(req => req.id !== id)            // Filter out accepted request.
-        const newFriends = [...friendsList, acceptedRequest]                       // Create new friends list and add newly-accepted.
+    const handleAcceptRequest = async (id) => {
+        try {
+            await acceptRequest(id);
+            const updatedFriends = await getFriends();
+            const updatedRequests = await getPendingRequests();
 
-        setFriendRequests(newRequests)
-        setFriendsList(newFriends)
-    }
+            setFriendsList(updatedFriends);
+            setFriendRequests(updatedRequests);
+        } catch (err) {
+            console.error("Error - not able to accept request:", err);
+        }
+    };
 
     // Function handling declined friend requests.
-    const handleDeclineRequest = (id) => {
-        const newRequests = friendRequests.filter(req => req.id !== id)            // Filter out declined request.
-        
-        setFriendRequests(newRequests)
-    }
+    const handleDeclineRequest = async (id) => {
+        try {
+            await declineRequest(id);
+            const updatedRequests = await getPendingRequests();
+
+            setFriendRequests(updatedRequests);
+        } catch (err) {
+            console.error("Error - Not able to decline request:", err);
+        }
+    };
 
     // Function handling removed friends.
-    const handleRemoveFriend = (id) => {
-        const newFriends = friendsList.filter(friend => friend.id !== id)          // Filter out removed friend.
-        
-        setFriendsList(newFriends)
-    }
+    const handleRemoveFriend = async (id) => {
+        try {
+            await removeFriend(id);
+            const updatedFriends = await getFriends();
+
+            setFriendsList(updatedFriends);
+        } catch (err) {
+            console.error("Error - Not able to remove friend:", err);
+        }
+    };
 
     // Function handling removed outgoing friend requests.
-    const handleRemoveOutgoingRequest = (id) => {
-        const newOutgoingRequests = outgoingRequests.filter(req => req.id !== id)  // Filter out removed outgoing request.
-        
-        setOutgoingRequests(newOutgoingRequests)
-    }
+    const handleRemoveOutgoingRequest = async (id) => {
+        try {
+            await cancelOutgoingRequest(id);
+            const updatedOutgoing = await getOutgoingRequests();
+
+            setOutgoingRequests(updatedOutgoing);
+        } catch (err) {
+            console.error("Error - Not able to cancel outgoing request:", err);
+        }
+    };
 
     // Function to reset search query every tab change.
     const handleTabChange = (tab) => {
@@ -139,12 +282,12 @@ export function FriendsPopup({ isOpen, onClose }) {
             return (
                 <div className="friends-content-list">
                     {filteredFriends.map((friend, index) => (
-                        <div key={friend.id} className={`friend-row ${index % 2 === 0 ? 'even' : 'odd'}`}>                       {/* Class name for styling. */}
+                        <div key={friend._id} className={`friend-row ${index % 2 === 0 ? 'even' : 'odd'}`}>                       {/* Class name for styling. */}
                             <div className="friend-info">
-                                <img src={friend.avatar} alt={friend.username} className="row-avatar" />
+                                <img src={friend.profilePicture || "/defaultAvatar.png"} alt={friend.username} className="row-avatar" />
                                 <span className="row-username">{friend.username}</span>
                             </div>
-                            <button className="action-btn remove-btn" onClick={() => handleRemoveFriend(friend.id)}>✖</button>  {/* Button to remove friend. */}
+                            <button className="action-btn remove-btn" onClick={() => handleRemoveFriend(friend._id)}>✖</button>  {/* Button to remove friend. */}
                         </div>
                     ))}
                 </div>
@@ -158,15 +301,15 @@ export function FriendsPopup({ isOpen, onClose }) {
 
             return (
                 <div className="friends-content-list">
-                    {filteredRequests.map((request, index) => (
-                        <div key={request.id} className={`friend-row ${index % 2 === 0 ? 'even' : 'odd'}`}>                             {/* Class name for styling. */}
+                    {filteredRequests.map((req, index) => (
+                        <div key={req._id} className={`request-row ${index % 2 === 0 ? 'even' : 'odd'}`}>                             {/* Class name for styling. */}
                             <div className="friend-info">
-                                <img src={request.avatar} alt={request.username} className="row-avatar" />
-                                <span className="row-username">{request.username}</span>
+                                <img src={req.profilePicture || "/defaultAvatar.png"} alt={req.username} className="row-avatar" />
+                                <span className="row-username">{req.username}</span>
                             </div>
                             <div className="action-group">
-                                <button className="action-btn accept-btn" onClick={() => handleAcceptRequest(request.id)}>✔</button>    {/* Button to accept request. */}
-                                <button className="action-btn decline-btn" onClick={() => handleDeclineRequest(request.id)}>✖</button>  {/* Button to decline request. */}
+                                <button className="action-btn accept-btn" onClick={() => handleAcceptRequest(req._id)}>✔</button>    {/* Button to accept request. */}
+                                <button className="action-btn decline-btn" onClick={() => handleDeclineRequest(req._id)}>✖</button>  {/* Button to decline request. */}
                             </div>
                         </div>
                     ))}
@@ -175,29 +318,39 @@ export function FriendsPopup({ isOpen, onClose }) {
         } else if (activeTab === 'Add Friend') {
 
             // Show outgoing friend requests' usernames containing search query.
-            const filteredOutgoingRequests = outgoingRequests.filter(friend => 
-                friend.username.toLowerCase().includes(searchQuery.toLowerCase())
-            );
-
             return (
                 <div className="add-friend-container">
                     <div className="add-friend-top">
                         <h2>Add a new friend today!</h2>
-                        <div className="users-search">
-                            <span className="search-icon">🔍</span>
-                            <input type="text" placeholder="Search Users" />
-                        </div>
+                        <form className="users-search" onSubmit={handleSearch}>
+                        <span className="search-icon">🔍</span>
+                        <input
+                            type="text"
+                            placeholder="Search Users"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                        </form>
+
+                        {statusMessage && <p className="status-message">{statusMessage}</p>}
                     </div>
+
                     <div className="friends-content-list">
-                        {filteredOutgoingRequests.map((request, index) => (
-                            <div key={request.id} className={`friend-row ${index % 2 === 0 ? 'even' : 'odd'}`}>                                    {/* Class name for styling. */}
+                        {Array.isArray(searchResults) && searchResults.length > 0 ? (
+                            searchResults.map((user, index) => (
+                            <div key={`${user._id || index}`} className={`friend-row ${index % 2 === 0 ? 'even' : 'odd'}`}>
                                 <div className="friend-info">
-                                    <img src={request.avatar} alt={request.username} className="row-avatar" />
-                                    <span className="row-username">{request.username}</span>
+                                <img src={user.profilePicture || "/defaultAvatar.png"} alt={user.username} className="row-avatar" />
+                                <span className="row-username">{user.username}</span>
                                 </div>
-                                <button className="action-btn cancel-btn" onClick={() => handleRemoveOutgoingRequest(request.id)}>Cancel</button>  {/* Button to cancel outgoing request. */}
+                                <button className="action-btn add-btn" onClick={() => handleAddFriend(user._id)}>
+                                ✚
+                                </button>
                             </div>
-                        ))}
+                            ))
+                        ) : (
+                            <p className = "status-message" p>No users found.</p>
+                        )}
                     </div>
                 </div>
             );

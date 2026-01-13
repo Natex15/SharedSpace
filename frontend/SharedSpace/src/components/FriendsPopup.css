@@ -112,18 +112,18 @@
     flex-direction: column;
 }
 
-.friend-row {
+.friend-row, .request-row {
     padding: 14px 24px;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.friend-row.even {
+.friend-row.even, .request-row.even {
     background-color: #FFEAEA;
 }
 
-.friend-row.odd {
+.friend-row.odd, .request-row.odd {
     background-color: #FFE2E2;
 }
 
@@ -238,4 +238,10 @@
 .users-search input::placeholder,
 .users-search input {
     font-family: 'Poppins', sans-serif; /* or any font */
+}
+
+.status-message {
+    align-self: center;
+    color: #5E5B7C;
+    padding-top: 1rem;
 }

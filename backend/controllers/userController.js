@@ -81,6 +81,30 @@ const updateUser = async (req, res, next) => {
     }
 };
 
+// find user by username
+const findByUsername = async (req, res, next) => {
+    const username = req.body.username;
+    const currentUserId = req.user.userId;
+
+    if (!username) {
+        return res.status(400).send('Username is required');
+    }
+    try {
+        const users = await User.find({
+            username: { $regex: username, $options: 'i' }, 
+            _id: { $ne: currentUserId } 
+        });
+
+        if (!users || users.length === 0) {
+            return res.status(404).send('User not found');
+        }
+        res.json(users);
+    } catch (err) {
+        console.error('Error fetching user by username:', err);
+        res.status(500).send('Server error');
+    }
+};
+
 // find the current logged in user 
 const findCurrentUser = async (req, res) => {
     try {
@@ -206,6 +230,11 @@ const sendFriendRequest = async (req, res) => {
     const currentUserId = req.user.userId; // User's _id (from the auth token)
 
     try {
+        // Avoid sending request to self
+        if (friendId === currentUserId) {
+            return res.status(400).json({ message: "Cannot send friend request to yourself." });
+        }
+
         // Find the user to add
         const friend = await User.findById(friendId);
         if (!friend) {
@@ -396,7 +425,31 @@ export const updateStreak = async (userId) => {
     }
 };
 
+const getOutgoingRequests = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const outgoing = await FriendRequest.find({ sender: userId });
+
+        res.json(outgoing);
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to fetch outgoing requests' });
+    }
+};
+
+const cancelOutgoingRequest = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { requestId } = req.body; 
+
+        await FriendRequest.deleteOne({ _id: requestId, sender: userId });
+        res.json({ message: 'Outgoing request canceled' });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to cancel outgoing request' });
+    }
+};
+
 export {
-    findByUserEmail, deleteUser, updateUser, findCurrentUser, registerUser, loginUser, getRegisteredUsers,
-    sendFriendRequest, acceptFriendRequest, declineFriendRequest, removeFriend, getFriendsList, getPendingRequests
+    findByUserEmail, deleteUser, updateUser, findByUsername, findCurrentUser, registerUser, 
+    loginUser, getRegisteredUsers, sendFriendRequest, acceptFriendRequest, declineFriendRequest, 
+    removeFriend, getFriendsList, getPendingRequests, getOutgoingRequests, cancelOutgoingRequest
 };
