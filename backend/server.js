@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import multer from 'multer';
+import cloudinary from 'cloudinary';
 
 //import all routers
 import userRouter from './routes/userRouter.js';
@@ -17,10 +18,15 @@ import leaderboardRouter from './routes/leaderboardRouter.js';
 
 dotenv.config();
 
+cloudinary.v2.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
 const app = express();
 app.use(express.json());
 app.use(cors());
-app.use('/uploads', express.static('uploads'));
 
 //connect mongodb
 mongoose.connect(process.env.MONGO_URI)

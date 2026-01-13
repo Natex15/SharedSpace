@@ -10,17 +10,9 @@ import {
 } from '../controllers/artworkController.js';
 import { verifyToken } from '../middleware/auth.js'; // for protected routes
 import multer from 'multer';
-import path from 'path';
+import cloudinary from 'cloudinary';
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/');
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
-  }
-});
-
+const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 const router = express.Router();
@@ -29,8 +21,23 @@ const router = express.Router();
 router.get('/all', findAllArtworks);
 
 // Protected routes (require token) example
-router.post('/upload', verifyToken, upload.single('file'), (req, res) => {
-  res.json({ imageURL: `http://localhost:3000/uploads/${req.file.filename}` });
+router.post('/upload', verifyToken, upload.single('file'), async (req, res) => {
+  try {
+    const result = await cloudinary.v2.uploader.upload_stream(
+      { folder: 'sharedspace' },
+      (error, result) => {
+        if (error) {
+          console.error('Cloudinary upload error:', error);
+          return res.status(500).json({ message: 'Upload failed' });
+        }
+        res.json({ imageURL: result.secure_url });
+      }
+    );
+    result.end(req.file.buffer);
+  } catch (error) {
+    console.error('Upload error:', error);
+    res.status(500).json({ message: 'Upload failed' });
+  }
 });
 router.get('/my', verifyToken, findMyArtworks);
 router.get('/:id', verifyToken, findByArtworkID);
