@@ -115,31 +115,32 @@ const registerUser = async (req, res) => {
         const trimmedEmail = email ? email.trim() : '';
         const trimmedUsername = username ? username.trim() : '';
 
-        const existingUser = await User.findOne({
-            $or: [
-                { email: { $regex: new RegExp(`^${trimmedEmail}$`, 'i') } },
-                { username: { $regex: new RegExp(`^${trimmedUsername}$`, 'i') } }
-            ]
-        });
-        if (existingUser) {
-            const field = existingUser.email.toLowerCase() === trimmedEmail.toLowerCase() ? 'email' : 'username';
-            return res.status(409).json({ error: `User with this ${field} already exists` });
+        // Check for existing email and username independently to provide specific feedback
+        const existingEmailUser = await User.findOne({ email: { $regex: new RegExp(`^${trimmedEmail}$`, 'i') } });
+        const existingUsernameUser = await User.findOne({ username: { $regex: new RegExp(`^${trimmedUsername}$`, 'i') } });
+
+        if (existingEmailUser && existingUsernameUser) {
+            return res.status(409).json({ error: 'Both email and username are already taken' });
+        }
+        if (existingEmailUser) {
+            return res.status(409).json({ error: 'User with this email already exists' });
+        }
+        if (existingUsernameUser) {
+            return res.status(409).json({ error: 'User with this username already exists' });
         }
 
-        const hashedPassword = await bcrypt.hash(req.body.password, 10);
+        const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = new User({
             _id: new mongoose.Types.ObjectId(),
-            // userID: new mongoose.Types.ObjectId(),  redundant ID
-            username: req.body.username,
-            email: req.body.email,
+            username: trimmedUsername,
+            email: trimmedEmail,
             password: hashedPassword
         });
 
         await newUser.save();
 
         res.status(201).json({
-            message: 'User created successfully.',
-            // userID: newUser.userID
+            message: 'User created successfully.'
         });
     } catch (error) {
         console.error('Registration error:', error);
