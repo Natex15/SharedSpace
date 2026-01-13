@@ -103,6 +103,7 @@ const getArtworkRank = async (req, res, next) => {
 
 export {
     getTopArtworks,
+    getStreakLeaders,
     getTopUsers,
     getArtworkRank
 };

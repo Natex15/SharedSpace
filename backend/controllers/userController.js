@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import mongoose from 'mongoose';
 import User from '../models/userModel.js';
+import { sendNotification } from "../utils/notificationHelper.js";
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 
@@ -151,7 +152,7 @@ const loginUser = async (req, res) => {
         }
 
         const token = jwt.sign(
-            { userId: user._id, email: user.email, userType: user.userType },
+            { userId: user._id, username: user.username, email: user.email, userType: user.userType },
             SECRET_KEY,
             { expiresIn: "1h" }
         );
@@ -160,6 +161,7 @@ const loginUser = async (req, res) => {
             message: "Logged in successfully!",
             token,
             email: user.email,
+            username: user.username,
             userType: user.userType
         });
     } catch (error) {
@@ -205,6 +207,14 @@ const sendFriendRequest = async (req, res) => {
         friend.friendRequests.push(currentUserId);
 
         await friend.save();
+
+        await sendNotification(
+            friendId, 
+            'friend_request', 
+            'New Friend Request', 
+            `${req.user.username} wants to be your friend!`,
+            currentUserId
+        );
         
         res.status(200).json({ message: "Friend request sent." });
     } catch (error) {
@@ -240,6 +250,13 @@ const acceptFriendRequest = async (req, res) => {
 
         await me.save();
         await friend.save();
+
+        await sendNotification(
+            friendId, 
+            'friend_request', 
+            'Request Accepted', 
+            `${req.user.username} accepted your friend request!`
+        );
 
         res.status(200).json({ message: "Friend request accepted." });
     } catch (error) {

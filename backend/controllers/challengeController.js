@@ -2,6 +2,7 @@ import Challenge from '../models/challengeModel.js';
 import Artwork from '../models/artworkModel.js'; 
 import mongoose from 'mongoose';
 import { updateStreak } from './userController.js'
+import { broadcastNotification } from '../utils/notificationHelper.js';
 
 // create a challenge (FOR ADMINS ONLY) 
 const createChallenge = async (req, res) => {
@@ -17,6 +18,14 @@ const createChallenge = async (req, res) => {
     });
 
     const createdChallenge = await challenge.save();
+
+    await broadcastNotification(
+      'challenge_alert', 
+      'New Challenge Alert!', 
+      `A new challenge "${title}" has just started. Show us your best work!`,
+      createdChallenge._id // The relatedId for deep-linking
+    );
+    
     res.status(201).json(createdChallenge);
   } catch (error) {
     console.error('Error creating challenge:', error);
