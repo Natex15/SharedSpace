@@ -2,6 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import multer from 'multer';
 
 //import all routers
 import userRouter from './routes/userRouter.js';
@@ -19,6 +20,7 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(cors());
+app.use('/uploads', express.static('uploads'));
 
 //connect mongodb
 mongoose.connect(process.env.MONGO_URI)

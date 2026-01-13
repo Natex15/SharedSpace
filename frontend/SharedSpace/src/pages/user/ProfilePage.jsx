@@ -62,18 +62,19 @@ export function ProfilePage() {
   });
 
   useEffect(() => {
-    const fetchUser = async () => {
+    const fetchUserData = async () => {
       const token = localStorage.getItem('token');
       if (!token) return;
 
       try {
-        const response = await fetch('http://localhost:3000/api/users/me', {
+        // Fetch user info
+        const userResponse = await fetch('http://localhost:3000/api/users/me', {
           headers: {
             'Authorization': `Bearer ${token}`,
           },
         });
-        if (response.ok) {
-          const userData = await response.json();
+        if (userResponse.ok) {
+          const userData = await userResponse.json();
           setUser(prev => ({
             ...prev,
             username: userData.username,
@@ -83,11 +84,32 @@ export function ProfilePage() {
             avatar: userData.profilePicture || SampleImg,
           }));
         }
+
+        // Fetch user's artworks
+        const artworksResponse = await fetch('http://localhost:3000/api/artworks/my', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+        if (artworksResponse.ok) {
+          const artworks = await artworksResponse.json();
+          const posts = artworks.map(artwork => ({
+            img: artwork.imageURL,
+            id: artwork._id,
+            title: artwork.title,
+            description: artwork.description,
+            uploadDate: artwork.uploadDate
+          }));
+          setUser(prev => ({
+            ...prev,
+            posts: posts,
+          }));
+        }
       } catch (error) {
-        console.error('Error fetching user:', error);
+        console.error('Error fetching user data:', error);
       }
     };
-    fetchUser();
+    fetchUserData();
   }, []);
 
   // State for the currently selected artwork to display in the popup
@@ -154,6 +176,10 @@ export function ProfilePage() {
         trigger={activeArt != null}
         setTrigger={() => setActiveArt(null)}
         img={activeArt?.img}
+        date={activeArt?.uploadDate ? new Date(activeArt.uploadDate).toLocaleDateString() : ''}
+        desc={activeArt?.description || ''}
+        author={user.username}
+        authorImg={user.avatar}
       />
 
       {/* Edit Profile Modal */}
@@ -225,7 +251,7 @@ export function ProfilePage() {
                       className="post-card"
                       onClick={() => setActiveArt(post)}
                     >
-                      <img src={post.img} alt="" />
+                      <img src={post.img} alt={post.title} />
                     </div>
                   ))}
                 </div>

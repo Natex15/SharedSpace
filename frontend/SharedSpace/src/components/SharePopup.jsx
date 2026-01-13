@@ -23,17 +23,57 @@ export function SharePopup({ trigger, setTrigger }) {
         setIsPublic(true);
     };
 
-    const handleSave = (e) => {
+    const handleSave = async (e) => {
         e.preventDefault();
 
-        const formData = {
-            files,
-            fileName,
-            isPublic,
-            description
-        };
+        const token = localStorage.getItem('token');
+        if (!token) return;
 
-        console.log('Saving files:', formData);
+        for (const file of files) {
+            try {
+                // Upload file
+                const formData = new FormData();
+                formData.append('file', file);
+
+                const uploadResponse = await fetch('http://localhost:3000/api/artworks/upload', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                    body: formData,
+                });
+
+                if (!uploadResponse.ok) {
+                    console.error('Upload failed');
+                    continue;
+                }
+
+                const uploadData = await uploadResponse.json();
+                const imageURL = uploadData.imageURL;
+
+                // Create artwork
+                const createResponse = await fetch('http://localhost:3000/api/artworks/create/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({
+                        title: fileName,
+                        description: description,
+                        imageURL: imageURL,
+                        privacy: isPublic ? 'public' : 'private',
+                        tags: []
+                    }),
+                });
+
+                if (!createResponse.ok) {
+                    console.error('Create artwork failed');
+                }
+            } catch (error) {
+                console.error('Error sharing file:', error);
+            }
+        }
 
         handleClose();
         navigate('/home-posted');

@@ -1,13 +1,36 @@
 import Artwork from "../models/artworkModel.js";
 import { updateStreak } from "./userController.js";
+import multer from 'multer';
+import path from 'path';
 
-// find all artworks
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/');
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({ storage: storage });
 const findAllArtworks = async (req, res, next) => {
     try {
         const artworks = await Artwork.find();
         res.send(artworks);
     } catch (err) {
         console.error('Error fetching artworks:', err);
+        res.status(500).send('Server error');
+    }
+};
+
+// find artworks by current user
+const findMyArtworks = async (req, res, next) => {
+    try {
+        const userId = req.user.userId;
+        const artworks = await Artwork.find({ ownerID: userId });
+        res.send(artworks);
+    } catch (err) {
+        console.error('Error fetching my artworks:', err);
         res.status(500).send('Server error');
     }
 };
@@ -122,5 +145,5 @@ const updateArtwork = async (req, res, next) => {
 };
 
 export {
-    findAllArtworks, findByOwnerID, findByArtworkID, createArtwork, deleteArtwork, updateArtwork
+    findAllArtworks, findByOwnerID, findMyArtworks, findByArtworkID, createArtwork, deleteArtwork, updateArtwork
 };
