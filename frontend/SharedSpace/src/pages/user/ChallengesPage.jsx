@@ -4,6 +4,7 @@ import { BorderlessButton } from '../../components/BorderlessButton';
 import { ConfirmVotePopup } from '../../components/ConfirmVotePopup';
 import { ChallengesPopup } from '../../components/ChallengesPopup';
 import './ChallengesPage.css';
+import API_BASE_URL from '../../apiConfig';
 
 /**
  * ChallengesPage Component
@@ -26,14 +27,14 @@ export function ChallengesPage() {
         const fetchChallenges = async () => {
             const token = localStorage.getItem('token');
             try {
-                const response = await fetch('http://localhost:3000/api/challenges/all', {
+                const response = await fetch(`${API_BASE_URL}/api/challenges/all`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (response.ok) {
                     const data = await response.json();
                     const now = new Date();
                     setChallenges(data);
-                    
+
                     // Find active challenges for default selection
                     const active = data.filter(c => new Date(c.startDate) <= now && new Date(c.endDate) >= now);
                     if (active.length > 0) {
@@ -55,7 +56,7 @@ export function ChallengesPage() {
         const fetchEntries = async () => {
             const token = localStorage.getItem('token');
             try {
-                const response = await fetch(`http://localhost:3000/api/votes/entries/${selectedChallengeId}`, {
+                const response = await fetch(`${API_BASE_URL}/api/votes/entries/${selectedChallengeId}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (response.ok) {
@@ -132,7 +133,7 @@ export function ChallengesPage() {
         const token = localStorage.getItem('token');
 
         try {
-            const response = await fetch(`http://localhost:3000/api/votes/submit/${currentArtwork.id}`, {
+            const response = await fetch(`${API_BASE_URL}/api/votes/submit/${currentArtwork.id}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
