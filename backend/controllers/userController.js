@@ -2,6 +2,8 @@ import bcrypt from "bcrypt";
 import mongoose from 'mongoose';
 import User from '../models/userModel.js';
 import Artwork from '../models/artworkModel.js';
+import Vote from '../models/voteModel.js';
+import Notification from '../models/notificationModel.js';
 import { sendNotification } from "../utils/notificationHelper.js";
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
@@ -30,7 +32,7 @@ const findByUserEmail = async (req, res, next) => {
 
 const getPublicIdFromUrl = (url) => {
     if (!url || !url.includes('cloudinary')) return null;
-    
+
     const parts = url.split('/');
     const filename = parts.pop(); // name.ext
     const maybeFolder = parts.pop(); // folder or upload
@@ -64,6 +66,23 @@ const deleteUser = async (req, res) => {
 
         // Delete artworks from DB
         await Artwork.deleteMany({ ownerID: userId });
+        const artworkIds = artworks.map(a => a._id);
+
+        // Delete votes (on user's artworks and by user)
+        await Vote.deleteMany({
+            $or: [
+                { voterID: userId },
+                { artworkID: { $in: artworkIds } }
+            ]
+        });
+
+        // Delete notifications
+        await Notification.deleteMany({
+            $or: [
+                { recipient: userId },
+                { relatedId: userId }
+            ]
+        });
 
         // Remove user from friends & requests
         await User.updateMany(
