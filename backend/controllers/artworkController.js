@@ -19,7 +19,19 @@ const upload = multer({ storage: storage });
 const findAllArtworks = async (req, res, next) => {
     try {
         const artworks = await Artwork.find().populate('ownerID', 'username profilePicture');
-        res.send(artworks);
+
+        // Filter out artworks where owner no longer exists (orphaned)
+        const validArtworks = artworks.filter(art => art.ownerID !== null);
+
+        // Identify orphaned artworks for cleanup
+        const orphanedArtworks = artworks.filter(art => art.ownerID === null);
+        if (orphanedArtworks.length > 0) {
+            const orphanedIds = orphanedArtworks.map(art => art._id);
+            await Artwork.deleteMany({ _id: { $in: orphanedIds } });
+            console.log(`[Auto-Cleanup] Deleted ${orphanedArtworks.length} orphaned artworks.`);
+        }
+
+        res.send(validArtworks);
     } catch (err) {
         console.error('Error fetching artworks:', err);
         res.status(500).send('Server error');
@@ -31,7 +43,19 @@ const findMyArtworks = async (req, res, next) => {
     try {
         const userId = req.user.userId;
         const artworks = await Artwork.find({ ownerID: userId }).populate('ownerID', 'username profilePicture');
-        res.send(artworks);
+
+        // Filter out artworks where owner no longer exists
+        const validArtworks = artworks.filter(art => art.ownerID !== null);
+
+        // Identify orphaned artworks for cleanup
+        const orphanedArtworks = artworks.filter(art => art.ownerID === null);
+        if (orphanedArtworks.length > 0) {
+            const orphanedIds = orphanedArtworks.map(art => art._id);
+            await Artwork.deleteMany({ _id: { $in: orphanedIds } });
+            console.log(`[Auto-Cleanup] Deleted ${orphanedArtworks.length} orphaned "my" artworks.`);
+        }
+
+        res.send(validArtworks);
     } catch (err) {
         console.error('Error fetching my artworks:', err);
         res.status(500).send('Server error');
@@ -45,6 +69,17 @@ const findByOwnerID = async (req, res, next) => {
         return res.status(400).send('ownerID is required');
     }
     try {
+        // Check if owner still exists
+        const ownerExists = await User.exists({ _id: ownerID });
+        if (!ownerExists) {
+            // Clean up artworks if the owner is gone
+            const result = await Artwork.deleteMany({ ownerID: ownerID });
+            if (result.deletedCount > 0) {
+                console.log(`[Auto-Cleanup] Deleted ${result.deletedCount} artworks for non-existent owner: ${ownerID}`);
+            }
+            return res.status(404).send('Owner not found');
+        }
+
         const artworks = await Artwork.find({ ownerID: ownerID });
         if (!artworks || artworks.length === 0) {
             return res.status(404).send('No artworks found for this owner');
@@ -59,10 +94,18 @@ const findByOwnerID = async (req, res, next) => {
 // find artwork gamit artworkid
 const findByArtworkID = async (req, res, next) => {
     try {
-        const artwork = await Artwork.findById(req.params.id);
+        const artwork = await Artwork.findById(req.params.id).populate('ownerID', 'username profilePicture');
         if (!artwork) {
             return res.status(404).send('Artwork not found');
         }
+
+        // If the owner is missing, the artwork should be deleted
+        if (!artwork.ownerID) {
+            await Artwork.findByIdAndDelete(req.params.id);
+            console.log(`[Auto-Cleanup] Deleted orphaned artwork on preview: ${req.params.id}`);
+            return res.status(404).send('Artwork not found (owner deleted)');
+        }
+
         res.send(artwork);
     } catch (err) {
         console.error('Error fetching artwork by ID:', err);
@@ -175,18 +218,13 @@ const updateArtwork = async (req, res, next) => {
 const getFriendsArtworks = async (req, res, next) => {
     try {
         const userId = req.user.userId;
-        console.log('getFriendsArtworks: Fetching for user:', userId);
-
         const user = await User.findById(userId).select('friends');
 
         if (!user) {
-            console.log('getFriendsArtworks: User not found');
             return res.status(404).json({ message: 'User not found' });
         }
-        console.log('getFriendsArtworks: User friends:', user.friends);
 
         if (!user.friends || user.friends.length === 0) {
-            console.log('getFriendsArtworks: User has no friends, returning empty array');
             return res.json([]);
         }
 
@@ -196,8 +234,18 @@ const getFriendsArtworks = async (req, res, next) => {
             .populate('ownerID', 'username profilePicture')
             .sort({ uploadDate: -1 });
 
-        console.log('getFriendsArtworks: Found', friendsArtworks.length, 'artworks from friends');
-        res.json(friendsArtworks);
+        // Filter out artworks whose owners no longer exist
+        const validArtworks = friendsArtworks.filter(art => art.ownerID !== null);
+
+        // Identify orphans for cleanup
+        const orphanedArtworks = friendsArtworks.filter(art => art.ownerID === null);
+        if (orphanedArtworks.length > 0) {
+            const orphanedIds = orphanedArtworks.map(art => art._id);
+            await Artwork.deleteMany({ _id: { $in: orphanedIds } });
+            console.log(`[Auto-Cleanup] Deleted ${orphanedArtworks.length} orphaned friends artworks.`);
+        }
+
+        res.json(validArtworks);
     } catch (err) {
         console.error('Error fetching friends artworks:', err);
         res.status(500).json({ message: 'Server error', error: err.message });
