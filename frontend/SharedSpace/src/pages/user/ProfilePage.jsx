@@ -9,6 +9,14 @@ import SampleImg from '../../assets/arts/ukiyo.jpg';
 import SampleImg2 from '../../assets/arts/almondtree.jpg';
 import './ProfilePage.css';
 
+// Import Badge Assets
+import Streak1 from '../../assets/badges/streak-1.png';
+import Streak5 from '../../assets/badges/streak-5.png';
+import Streak10 from '../../assets/badges/streak-10.png';
+import Streak30 from '../../assets/badges/streak-30.png';
+import Streak90 from '../../assets/badges/streak-90.png';
+import Streak365 from '../../assets/badges/streak-365.png';
+
 /**
  * ProfilePage Component
  * 
@@ -21,6 +29,16 @@ import './ProfilePage.css';
  * 
  */
 
+// Map the DB 'iconURL' string to the imported asset
+const BADGE_MAP = {
+  'streak-1': Streak1,
+  'streak-5': Streak5,
+  'streak-10': Streak10,
+  'streak-30': Streak30,
+  'streak-90': Streak90,
+  'streak-365': Streak365,
+};
+
 export function ProfilePage() {
   const location = useLocation();
   const [user, setUser] = useState({
@@ -29,14 +47,7 @@ export function ProfilePage() {
     streakCount: 0,
     profilePicture: "",
     posts: [],
-    achievements: [
-      { id: 1, icon: "🎨" },
-      { id: 2, icon: "🔥" },
-      { id: 3, icon: "🏆" },
-      { id: 4, icon: "💎" },
-      { id: 5, icon: "⭐" },
-      { id: 6, icon: "🚀" },
-    ],
+    achievements: [],
     friends: []
   });
 
@@ -72,6 +83,7 @@ export function ProfilePage() {
             profilePicture: userData.profilePicture,
             avatar: userData.profilePicture || SampleImg,
             friends: userData.friends || [],
+            achievements: userData.badges || [],
           }));
         }
 
@@ -293,11 +305,15 @@ export function ProfilePage() {
 
                 {/* Achievement Icons */}
                 <div className="achievements-list">
-                  {paginatedAchievements.map(ach => (
-                    <span key={ach.id} className="achievement-icon">
-                      {ach.icon}
-                    </span>
-                  ))}
+                  {paginatedAchievements.map(ach => {
+                    const imgSrc = BADGE_MAP[ach.iconURL] || ach.iconURL;
+                    
+                    return (
+                      <div key={ach._id} className="achievement-item" title={ach.badgeName}>
+                        <img src={imgSrc} alt={ach.badgeName} className="achievement-img" />
+                      </div>
+                    );
+                  })}
                 </div>
 
                 {/* Next Page Button */}

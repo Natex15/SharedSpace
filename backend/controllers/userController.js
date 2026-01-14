@@ -227,7 +227,8 @@ const getRegisteredUsers = async (req, res) => {
 const getUserById = async (req, res) => {
     try {
         const user = await User.findById(req.params.id)
-        .populate("friends", "username profilePicture");
+        .populate("friends", "username profilePicture")
+        .populate("badges");
 
         res.json(user);
     } catch (err) {
