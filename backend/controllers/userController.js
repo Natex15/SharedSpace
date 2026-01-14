@@ -91,8 +91,8 @@ const findByUsername = async (req, res, next) => {
     }
     try {
         const users = await User.find({
-            username: { $regex: username, $options: 'i' }, 
-            _id: { $ne: currentUserId } 
+            username: { $regex: username, $options: 'i' },
+            _id: { $ne: currentUserId }
         });
 
         if (!users || users.length === 0) {
@@ -223,11 +223,11 @@ const getRegisteredUsers = async (req, res) => {
         res.status(500).json({ error: 'Unable to get users.' });
     }
 };
- // gets users by id
+// gets users by id
 const getUserById = async (req, res) => {
     try {
         const user = await User.findById(req.params.id)
-        .populate("friends", "username profilePicture");
+            .populate("friends", "username profilePicture");
 
         res.json(user);
     } catch (err) {
@@ -418,7 +418,7 @@ const updateStreak = async (userId) => {
             if (now.toDateString() === lastActivity.toDateString()) {
                 user.lastActivityDate = now;
                 await user.save();
-                return user; 
+                return user;
             }
 
             // Calculate difference in days
@@ -438,7 +438,7 @@ const updateStreak = async (userId) => {
 
         user.lastActivityDate = now;
         await user.save();
-        return user; 
+        return user;
     } catch (err) {
         console.error("Streak Update Error:", err);
     }
@@ -460,6 +460,19 @@ const streakCheckIn = async (req, res) => {
     }
 };
 
+const getStreak = async (req, res) => {
+    try {
+        const user = await User.findById(req.user.userId)
+            .select('streakCount lastActivityDate');
+
+        res.json({
+            streakCount: user.streakCount,
+            lastActivityDate: user.lastActivityDate
+        });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to fetch streak' });
+    }
+};
 
 const getOutgoingRequests = async (req, res) => {
     try {
@@ -475,7 +488,7 @@ const getOutgoingRequests = async (req, res) => {
 const cancelOutgoingRequest = async (req, res) => {
     try {
         const userId = req.user.id;
-        const { requestId } = req.body; 
+        const { requestId } = req.body;
 
         await FriendRequest.deleteOne({ _id: requestId, sender: userId });
         res.json({ message: 'Outgoing request canceled' });
@@ -485,21 +498,21 @@ const cancelOutgoingRequest = async (req, res) => {
 };
 
 const getUserAchievements = async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id)
-      .populate('badges'); //get full badge details in json
+    try {
+        const user = await User.findById(req.params.id)
+            .populate('badges'); //get full badge details in json
 
-    if (!user) return res.status(404).json({ message: "User not found" });
+        if (!user) return res.status(404).json({ message: "User not found" });
 
-    res.status(200).json(user.badges);
-  } catch (error) {
-    res.status(500).json({ message: "Error fetching achievements" });
-  }
+        res.status(200).json(user.badges);
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching achievements" });
+    }
 };
 
 export {
-    findByUserEmail, deleteUser, updateUser, findByUsername, findCurrentUser, registerUser, 
-    loginUser, getRegisteredUsers, getUserById, sendFriendRequest, acceptFriendRequest, declineFriendRequest, 
-    removeFriend, getFriendsList, getPendingRequests, getOutgoingRequests, cancelOutgoingRequest, 
-    updateStreak, streakCheckIn, getUserAchievements
+    findByUserEmail, deleteUser, updateUser, findByUsername, findCurrentUser, registerUser,
+    loginUser, getRegisteredUsers, getUserById, sendFriendRequest, acceptFriendRequest, declineFriendRequest,
+    removeFriend, getFriendsList, getPendingRequests, getOutgoingRequests, cancelOutgoingRequest,
+    updateStreak, streakCheckIn, getUserAchievements, getStreak,
 };

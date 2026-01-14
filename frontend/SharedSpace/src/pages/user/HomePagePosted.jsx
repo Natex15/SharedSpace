@@ -45,8 +45,6 @@ export function HomePagePosted() {
         { img: CafeNight, date: "1/4/2026", description: "Cafe Terrace at Night", author: "Artist" },
     ];
 
-    const streakCount = 12; //hardcoded
-
     const leaderboardData = [
         { rank: 1, name: "User One", points: 1250, avatar: SampleImg },
         { rank: 2, name: "User Two", points: 1100, avatar: SampleImg2 },
@@ -61,6 +59,32 @@ export function HomePagePosted() {
 
     const [activeArt, setActiveArt] = useState(null);
     const [showSharePopup, setShowSharePopup] = useState(false);
+
+    const [streakCount, setStreakCount] = useState(0);
+    const [loadingStreak, setLoadingStreak] = useState(true);
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+
+        fetch('http://localhost:3000/api/users/get-streak', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+            .then(res => res.json())
+            .then(data => {
+                setStreakCount(data.streakCount);
+                setLoadingStreak(false);
+            })
+            .catch(error => {
+                console.error('Error fetching streak:', error);
+                setLoadingStreak(false);
+            });
+
+        if (loadingStreak) {
+            console.log('Loading streak...');
+        }
+    }, []);
 
     useEffect(() => {
         fetchChallenges();
