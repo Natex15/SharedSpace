@@ -19,25 +19,25 @@ import SundayReal from '../../assets/arts/sunday.jpg';
 import CherryBlossom from '../../assets/arts/cherryblossom.jpg';
 
 export function ArtWallPage() {
-    const artWorks = [
-        { img: Almond, date: "1/3/2026", description: "lorem ipsum dolor" },
-        { img: August, date: "1/4/2026", description: "lorem ipsum dolor" },
-        { img: Cafe, date: "1/5/2026", description: "lorem ipsum dolor" },
-        { img: Girl, date: "1/4/2026", description: "lorem ipsum dolor" },
-        { img: Lemo, date: "1/5/2026", description: "lorem ipsum dolor" },
-        { img: Nippon, date: "1/4/2026", description: "lorem ipsum dolor" },
-        { img: Sakura, date: "1/5/2026", description: "lorem ipsum dolor" },
-        { img: Sunday, date: "1/4/2026", description: "lorem ipsum dolor" },
-        { img: WaterLily, date: "1/5/2026", description: "lorem ipsum dolor" },
-        { img: Canvas, date: "1/6/2026", description: "Community Canvas" },
-        { img: Dogs, date: "1/7/2026", description: "Playful Dogs" },
-        { img: France, date: "1/8/2026", description: "French Landscape" },
-        { img: Tertre, date: "1/9/2026", description: "Place du Tertre" },
-        { img: StSiffret, date: "1/10/2026", description: "Saint Siffret" },
-        { img: SundayReal, date: "1/11/2026", description: "A Sunday Afternoon" },
-        { img: CherryBlossom, date: "1/12/2026", description: "Cherry Blossom" }
-    ]
-    const [activeArt, setActiveArt] = useState(null);
+  const [artWorks, setArtWorks] = useState([]);
+  const [activeArt, setActiveArt] = useState(null);
+
+   useEffect(() => {
+    const fetchArtWorks = async () => {
+      try {
+        const res = await fetch("http://localhost:3000/api/artworks/all", {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        });
+        if (!res.ok) throw new Error("Server Error");
+        const data = await res.json();
+        setArtWorks(data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchArtWorks();
+  }, []);
 
     useEffect(() => {
         const resizeGridItem = (item, img) => {
@@ -81,10 +81,10 @@ export function ArtWallPage() {
             <ArtPopup
                 trigger={activeArt != null}
                 setTrigger={() => setActiveArt(null)}
-                img={activeArt?.img}
-                date={activeArt?.date}
+                img={activeArt?.imageURL}
+                date={activeArt?.uploadDate}
                 desc={activeArt?.description}
-            />
+            />  
             <h1 className='aw-title'>Art Wall</h1>
             <p className='aw-subtitle'>See what the community's been creating lately 🎨</p>
             <div className='artWallWrapper'>
@@ -97,7 +97,7 @@ export function ArtWallPage() {
                                 onClick={() => { setActiveArt(art) }}
                             >
                                 <img
-                                    src={art.img}
+                                    src={art.imageURL}
                                     alt='Artwork'
                                     className='artWork'
                                 />

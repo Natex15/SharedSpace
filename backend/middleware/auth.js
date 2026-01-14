@@ -11,10 +11,14 @@ const verifyToken = (req, res, next) => {
         return res.status(401).json({ message: "Unauthorized: No token provided." });
     }
 
-    const token = header.split(" ")[1];
+    const token = header.split(" ")[1]; 
     try {
         const decoded = jwt.verify(token, SECRET_KEY);
         req.user = decoded;
+        console.log(req.user.isBanned);
+        if(req.user.isBanned) { 
+          return res.status(401).json({ message: "You have been banned."}); 
+         }  
         next();
     } catch {
         res.status(401).json({ error: "Invalid or expired token." });
