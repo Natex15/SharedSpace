@@ -6,16 +6,25 @@ import Challenge from '../models/challengeModel.js';
 const getChallengeEntries = async (req, res) => {
   try {
     const { challengeId } = req.params;
+    const userId = req.user.userId;
 
     // Find all artworks that have this challengeId
-    const entries = await Artwork.find({ challengeId: challengeId })
+    const entries = await Artwork.find({ challengeId: challengeId, ownerID: { $ne: userId } })
       .populate('ownerID', 'username profilePicture'); // Get the artist's info
 
     if (!entries || entries.length === 0) {
       return res.status(404).json({ message: 'No entries found for this challenge.' });
     }
 
-    res.status(200).json(entries);
+    // Get IDs of artworks the user has already voted on
+    const entryIds = entries.map(e => e._id);
+    const userVotes = await Vote.find({ voterID: userId, artworkID: { $in: entryIds } }).select('artworkID');
+    const votedArtworkIds = userVotes.map(vote => vote.artworkID.toString());
+
+    // Filter out artworks that the user has already voted on
+    const unvotedEntries = entries.filter(entry => !votedArtworkIds.includes(entry._id.toString()));
+
+    res.status(200).json(unvotedEntries);
   } catch (error) {
     console.error('Error fetching challenge entries:', error);
     res.status(500).json({ message: 'Server error fetching entries' });
@@ -33,6 +42,13 @@ const submitVote = async (req, res) => {
     const artwork = await Artwork.findById(artworkId);
     if (!artwork || !artwork.challengeId) {
       return res.status(404).json({ message: 'Challenge artwork not found.' });
+    }
+
+    // Prevent voting on own artwork
+    if (artwork.ownerID.toString() === voterID) {
+      return res.status(403).json({
+        message: 'You cannot vote on your own artwork.'
+      });
     }
 
     // Find the challenge to get its tag point values

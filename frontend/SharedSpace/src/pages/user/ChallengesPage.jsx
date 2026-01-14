@@ -1,15 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BorderedButton } from '../../components/BorderedButton';
 import { BorderlessButton } from '../../components/BorderlessButton';
 import { ConfirmVotePopup } from '../../components/ConfirmVotePopup';
 import { ChallengesPopup } from '../../components/ChallengesPopup';
 import './ChallengesPage.css';
-import Almond from '../../assets/arts/almondtree.jpg';
-import August from '../../assets/arts/augustrenoire.jpg';
-import Cafe from '../../assets/arts/cafenight.jpg';
-import Girl from '../../assets/arts/girlwithpearlearrings.jpg';
-import Lemo from '../../assets/arts/lemoulin.jpg';
-import Nippon from '../../assets/arts/nippon.jpg';
 
 /**
  * ChallengesPage Component
@@ -18,32 +12,68 @@ import Nippon from '../../assets/arts/nippon.jpg';
  * and provides an interactive voting interface for shared artworks.
  */
 export function ChallengesPage() {
-    const challenge = {
-        title: "10-MinuteSketch",
-        description: "The #10-MinuteSketch challenge lets participants create a sketch in just 10 minutes, showcasing creativity, quick thinking, and originality under time pressure.",
-        startDate: new Date(),
-        endDate: new Date(new Date().setDate(new Date().getDate() + 7)),
-        criteriaTags: [
-            { name: "Originality" },
-            { name: "Impact" },
-            { name: "Relevance" }
-        ]
-    };
-
+    const [challenges, setChallenges] = useState([]);
+    const [selectedChallengeId, setSelectedChallengeId] = useState("");
     const [currentVoteIndex, setCurrentVoteIndex] = useState(0);
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [showConfirmPopup, setShowConfirmPopup] = useState(false);
     const [showChallengesPopup, setShowChallengesPopup] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
+    const [votingArtworks, setVotingArtworks] = useState([]);
 
-    const [votingArtworks, setVotingArtworks] = useState([
-        { id: 1, img: Almond, title: "Artwork 1" },
-        { id: 2, img: August, title: "Artwork 2" },
-        { id: 3, img: Cafe, title: "Artwork 3" },
-        { id: 4, img: Girl, title: "Artwork 4" },
-        { id: 5, img: Lemo, title: "Artwork 5" },
-        { id: 6, img: Nippon, title: "Artwork 6" },
-    ]);
+    // Fetch active challenges
+    useEffect(() => {
+        const fetchChallenges = async () => {
+            const token = localStorage.getItem('token');
+            try {
+                const response = await fetch('http://localhost:3000/api/challenges/all', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    const now = new Date();
+                    setChallenges(data);
+                    
+                    // Find active challenges for default selection
+                    const active = data.filter(c => new Date(c.startDate) <= now && new Date(c.endDate) >= now);
+                    if (active.length > 0) {
+                        setSelectedChallengeId(active[0]._id);
+                    } else if (data.length > 0) {
+                        setSelectedChallengeId(data[0]._id);
+                    }
+                }
+            } catch (error) {
+                console.error("Error fetching challenges:", error);
+            }
+        };
+        fetchChallenges();
+    }, []);
+
+    // Fetch entries for selected challenge
+    useEffect(() => {
+        if (!selectedChallengeId) return;
+        const fetchEntries = async () => {
+            const token = localStorage.getItem('token');
+            try {
+                const response = await fetch(`http://localhost:3000/api/votes/entries/${selectedChallengeId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    setVotingArtworks(data.map(art => ({ id: art._id, img: art.imageURL, title: art.title })));
+                    setCurrentVoteIndex(0);
+                } else {
+                    setVotingArtworks([]);
+                }
+            } catch (error) {
+                console.error("Error fetching entries:", error);
+                setVotingArtworks([]);
+            }
+        };
+        fetchEntries();
+    }, [selectedChallengeId]);
+
+    const currentChallenge = challenges.find(c => c._id === selectedChallengeId);
 
     /**
      * Handles navigation to the previous artwork in the voting carousel.
@@ -69,7 +99,6 @@ export function ChallengesPage() {
 
     /**
      * Toggles the selection of a voting category tag.
-     * Enforces a maximum limit of 3 selected categories. (tentative rahh)
      */
     const toggleCategory = (categoryName) => {
         setErrorMessage(""); // Clear error message on interaction
@@ -94,16 +123,41 @@ export function ChallengesPage() {
 
     /**
      * Confirms the vote submission.
-     * Removes the current artwork from the voting list (simulating a submitted vote, tbc),
+     * Removes the current artwork from the voting list 
      * resets category selections, and closes the confirmation popup.
      */
-    const confirmVote = () => {
-        const newArtworks = votingArtworks.filter((_, index) => index !== currentVoteIndex);
-        setVotingArtworks(newArtworks);
-        setSelectedCategories([]);
-        setShowConfirmPopup(false);
-        if (newArtworks.length === 0 || currentVoteIndex >= newArtworks.length) {
-            setCurrentVoteIndex(0);
+    const confirmVote = async () => {
+        if (votingArtworks.length === 0) return;
+        const currentArtwork = votingArtworks[currentVoteIndex];
+        const token = localStorage.getItem('token');
+
+        try {
+            const response = await fetch(`http://localhost:3000/api/votes/submit/${currentArtwork.id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ selectedTags: selectedCategories })
+            });
+
+            if (response.ok) {
+                const newArtworks = votingArtworks.filter((_, index) => index !== currentVoteIndex);
+                setVotingArtworks(newArtworks);
+                setSelectedCategories([]);
+                setShowConfirmPopup(false);
+                if (newArtworks.length === 0 || currentVoteIndex >= newArtworks.length) {
+                    setCurrentVoteIndex(0);
+                }
+            } else {
+                const data = await response.json();
+                setErrorMessage(data.message || "Failed to submit vote.");
+                setShowConfirmPopup(false);
+            }
+        } catch (error) {
+            console.error("Vote submission error:", error);
+            setErrorMessage("Error submitting vote.");
+            setShowConfirmPopup(false);
         }
     };
 
@@ -111,35 +165,40 @@ export function ChallengesPage() {
         <div className="challenges-page">
             {/* Challenge Area */}
             <div className="challenge-main">
-                <h1 className="main-title">This Week's Challenge</h1>
+                {currentChallenge ? (
+                    <>
+                        <h1 className="main-title">This Week's Challenge</h1>
 
-                <div className="challenge-tag-container">
-                    <div className="challenge-tag"># {challenge.title}</div>
-                </div>
+                        <div className="challenge-tag-container">
+                            <div className="challenge-tag"># {currentChallenge.title}</div>
+                        </div>
 
-                <div className="view-all-challenges-button">
-                    <BorderlessButton
-                        onClick={() => setShowChallengesPopup(true)}
-                        message="View All Challenges"
-                        type="darkbody"
-                    />
-                </div>
+                        <div className="view-all-challenges-button">
+                            <BorderlessButton
+                                onClick={() => setShowChallengesPopup(true)}
+                                message="View All Challenges"
+                                type="darkbody"
+                            />
+                        </div>
 
-                <div className="challenge-content">
-                    <div className="description-box">
-                        <p>
-                            {challenge.description}
-                        </p>
-                    </div>
-
-                    <div className="circles-container">
-                        {challenge.criteriaTags.map((tag, index) => (
-                            <div key={index} className="info-circle">
-                                <span>{tag.name}</span>
+                        <div className="challenge-content">
+                            <div className="description-box">
+                                <p>{currentChallenge.description}</p>
                             </div>
-                        ))}
-                    </div>
-                </div>
+
+                            <div className="circles-container">
+                                {currentChallenge.criteriaTags.map((tag, index) => (
+                                    <div key={index} className="info-circle">
+                                        <span>{tag.name}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </>
+                ) : (
+                    <h1 className="main-title">Loading Challenges...</h1>
+                )}
+
             </div>
 
             {/* Friends Challenge Area */}
@@ -215,7 +274,7 @@ export function ChallengesPage() {
                                 </div>
                             );
                         }) : (
-                            <p className="no-artworks-message">You have voted on all artworks!</p>
+                            <p className="no-artworks-message">There are no artworks to vote on!</p>
                         )}
                     </div>
 
@@ -233,7 +292,7 @@ export function ChallengesPage() {
                     )}
 
                     <div className="voting-categories">
-                        {challenge.criteriaTags.map((tag, index) => (
+                        {currentChallenge && currentChallenge.criteriaTags.map((tag, index) => (
                             <div key={index} onClick={() => toggleCategory(tag.name)} className="category-button-wrapper" style={{ opacity: selectedCategories.includes(tag.name) ? 1 : 0.5 }}>
                                 <BorderedButton message={tag.name} size="purple" />
                             </div>
@@ -254,6 +313,7 @@ export function ChallengesPage() {
             <ChallengesPopup
                 trigger={showChallengesPopup}
                 setTrigger={setShowChallengesPopup}
+                onSelectChallenge={setSelectedChallengeId}
             />
         </div>
     );

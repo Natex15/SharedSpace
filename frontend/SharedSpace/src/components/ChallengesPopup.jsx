@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { BorderedButton } from './BorderedButton';
 import API_BASE_URL from '../apiConfig';
 
-export function ChallengesPopup({ trigger, setTrigger }) {
+export function ChallengesPopup({ trigger, setTrigger, onSelectChallenge }) {
     const [challenges, setChallenges] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -93,9 +93,21 @@ export function ChallengesPopup({ trigger, setTrigger }) {
                             >
                                 <div className="challenge-header-row">
                                     <h3 className="challenge-title"># {challenge.title}</h3>
-                                    {isActive(challenge.startDate, challenge.endDate) && (
-                                        <span className="active-badge">Active</span>
-                                    )}
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                        {isActive(challenge.startDate, challenge.endDate) && (
+                                            <span className="active-badge">Active</span>
+                                        )}
+                                        {onSelectChallenge && (
+                                            <BorderedButton
+                                                message="Select"
+                                                size="purple"
+                                                onClick={() => {
+                                                    onSelectChallenge(challenge._id);
+                                                    setTrigger(false);
+                                                }}
+                                            />
+                                        )}
+                                    </div>
                                 </div>
 
                                 <p className="challenge-description">{challenge.description}</p>

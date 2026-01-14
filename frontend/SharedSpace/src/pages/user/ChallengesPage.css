@@ -22,7 +22,7 @@
 }
 
 .main-title {
-    color: #341539;
+    color: #5C5A7B;
     text-align: center;
     font-family: 'Poppins', sans-serif;
     font-size: 3rem;
@@ -181,10 +181,6 @@
     background-color: #FAF3EB;
     padding: 40px 20px;
     text-align: center;
-}
-
-.voting-area .main-title {
-    color: #000;
 }
 
 .voting-subtitle {
