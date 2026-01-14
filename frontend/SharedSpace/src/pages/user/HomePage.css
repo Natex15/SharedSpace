@@ -60,6 +60,12 @@
     border-radius: 30px;
     overflow: hidden;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.posted-art-card-large:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
 }
 
 .posted-art-image {
@@ -188,6 +194,7 @@
 .friends-text-area {
     display: flex;
     flex-direction: column;
+    padding-bottom: 3rem;
 }
 
 .friendsText {
@@ -199,9 +206,25 @@
     margin-bottom: 1rem;
 }
 
+.friendsText2 {
+    color: #FFE2E2;
+    font-size: 60px;
+    font-style: bold;
+    max-width: 60rem;
+    margin-top: 5.5rem;
+    margin-bottom: 1rem;
+}
+
 .friendsButton {
     color: #FFE2E2;
 
+}
+
+.friends-fallback-message {
+    color: #FAF3EB;
+    font-size: 1.1rem;
+    margin: 0.5rem 0 2rem 0;
+    text-align: center;
 }
 
 .artWallPreview {
@@ -384,30 +407,48 @@
     align-items: center;
     justify-content: center;
     border-radius: 12px 12px 0 0;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.podium-card:hover {
+    transform: translateY(-10px);
 }
 
 .rank-1 {
-    background-color: #D9899F;
+    background-color: #CB6D6D;
     width: 200px;
     height: 350px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     z-index: 3;
 }
 
+.rank-1:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
 .rank-2 {
-    background-color: #E9A8B8;
+    background-color: #EF8C8C;
     width: 180px;
     height: 280px;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
     z-index: 2;
 }
 
+.rank-2:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+}
+
 .rank-3 {
-    background-color: #F0BCC3;
+    background-color: #EDA8A8;
     width: 180px;
     height: 240px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     z-index: 1;
+}
+
+.rank-3:hover {
+    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.2);
 }
 
 .podium-rank {

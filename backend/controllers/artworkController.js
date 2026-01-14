@@ -5,12 +5,12 @@ import multer from 'multer';
 import path from 'path';
 
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/');
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
-  }
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/');
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname));
+    }
 });
 
 const upload = multer({ storage: storage });
@@ -82,10 +82,10 @@ const createArtwork = async (req, res, next) => {
         });
 
         const savedArtwork = await newArtwork.save();
-        
+
         const updatedUser = await updateStreak(req.user.userId); //trigger a streak update to user after new artwork created
 
-        if (updatedUser){
+        if (updatedUser) {
             await awardStreakBadges(req.user.userId, updatedUser.streakCount)
         }
 
@@ -149,6 +149,40 @@ const updateArtwork = async (req, res, next) => {
     }
 };
 
+// get artworks from user's friends
+const getFriendsArtworks = async (req, res, next) => {
+    try {
+        const userId = req.user.userId;
+        console.log('getFriendsArtworks: Fetching for user:', userId);
+
+        const User = (await import('../models/userModel.js')).default;
+        const user = await User.findById(userId).select('friends');
+
+        if (!user) {
+            console.log('getFriendsArtworks: User not found');
+            return res.status(404).json({ message: 'User not found' });
+        }
+        console.log('getFriendsArtworks: User friends:', user.friends);
+
+        if (!user.friends || user.friends.length === 0) {
+            console.log('getFriendsArtworks: User has no friends, returning empty array');
+            return res.json([]);
+        }
+
+        const friendsArtworks = await Artwork.find({
+            ownerID: { $in: user.friends }
+        })
+            .populate('ownerID', 'username profilePicture')
+            .sort({ uploadDate: -1 });
+
+        console.log('getFriendsArtworks: Found', friendsArtworks.length, 'artworks from friends');
+        res.json(friendsArtworks);
+    } catch (err) {
+        console.error('Error fetching friends artworks:', err);
+        res.status(500).json({ message: 'Server error', error: err.message });
+    }
+};
+
 export {
-    findAllArtworks, findByOwnerID, findMyArtworks, findByArtworkID, createArtwork, deleteArtwork, updateArtwork
+    findAllArtworks, findByOwnerID, findMyArtworks, findByArtworkID, createArtwork, deleteArtwork, updateArtwork, getFriendsArtworks
 };

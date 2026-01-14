@@ -16,9 +16,9 @@
 .popup-content {
     display: flex;
     width: 90%;
-    max-width: 1200px;
-    height: 85vh;
-    max-height: 800px;
+    max-width: 900px;
+    height: 70vh;
+    max-height: 600px;
     background: transparent;
     border-radius: 12px;
     overflow: hidden;
@@ -81,8 +81,8 @@
 }
 
 .image-wrapper img {
-    max-width: 500px;
-    max-height: 500px;
+    max-width: 350px;
+    max-height: 350px;
     width: auto;
     height: auto;
     object-fit: contain;

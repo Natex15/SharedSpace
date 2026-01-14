@@ -1,12 +1,13 @@
 import express from 'express';
 import {
-    findAllArtworks,
-    findByOwnerID,
-    findMyArtworks,
-    findByArtworkID,
-    createArtwork,
-    deleteArtwork,
-    updateArtwork
+  findAllArtworks,
+  findByOwnerID,
+  findMyArtworks,
+  findByArtworkID,
+  createArtwork,
+  deleteArtwork,
+  updateArtwork,
+  getFriendsArtworks
 } from '../controllers/artworkController.js';
 import { verifyToken } from '../middleware/auth.js'; // for protected routes
 import multer from 'multer';
@@ -40,6 +41,7 @@ router.post('/upload', verifyToken, upload.single('file'), async (req, res) => {
   }
 });
 router.get('/my', verifyToken, findMyArtworks);
+router.get('/friends', verifyToken, getFriendsArtworks);
 router.get('/:id', verifyToken, findByArtworkID);
 router.post('/owner', verifyToken, findByOwnerID);
 router.post('/create/', verifyToken, createArtwork);

@@ -2,6 +2,14 @@ import './ArtPopup.css'
 import { useState } from 'react';
 import { ReportPopup } from './ReportPopup';
 
+function formatDate(isoDateString) {
+    const date = new Date(isoDateString);
+    const month = date.getMonth() + 1; // Months are 0-indexed
+    const day = date.getDate();
+    const year = date.getFullYear();
+    return `${month}/${day}/${year}`;
+}
+
 export function ArtPopup({ trigger, setTrigger, img, date, desc, author, authorImg }) {
     const [zoom, setZoom] = useState(100);
     const [report, setReport] = useState(false);
@@ -66,7 +74,7 @@ export function ArtPopup({ trigger, setTrigger, img, date, desc, author, authorI
                         )}
                         <div className="info-section">
                             <h3 className="info-label">Posted on</h3>
-                            <p className="info-value">{date}</p>
+                            <p className="info-value">{formatDate(date)}</p>
                         </div>
                         <div className="info-section">
                             <h3 className="info-label">Description</h3>

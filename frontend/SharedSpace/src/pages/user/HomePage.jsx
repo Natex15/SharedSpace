@@ -2,6 +2,7 @@ import './HomePage.css'
 import { BorderedButton } from '../../components/BorderedButton.jsx'
 import { BorderlessButton } from '../../components/BorderlessButton.jsx';
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ArtPopup } from '../../components/ArtPopup';
 import { SharePopup } from '../../components/SharePopup';
 import Share from '../../assets/ShareYourDay.svg'
@@ -35,14 +36,8 @@ export function HomePage() {
         { img: Ukiyo, date: "1/4/2026", description: "Sunday Afternoon / Ukiyo" },
         { img: WaterLilies, date: "1/5/2026", description: "Water Lilies" }
     ];
-    //note: need isort based on date
-    const friends_artWorks = [
-        { img: Almond, date: "1/3/2026", description: "Almond Tree", author: "Vincent van Gogh" },
-        { img: WaterLilies, date: "1/1/2026", description: "Water Lilies", author: "Claude Monet" },
-        { img: PlaceDuTertre, date: "1/4/2026", description: "Place du Tertre", author: "Artist" },
-        { img: AugustRenoir, date: "1/6/2026", description: "August Renoir", author: "Artist" },
-        { img: CafeNight, date: "1/4/2026", description: "Cafe Terrace at Night", author: "Artist" },
-    ];
+    const [friendsArtworks, setFriendsArtworks] = useState([]);
+    const [loadingFriendsArtworks, setLoadingFriendsArtworks] = useState(true);
 
     const leaderboardData = [
         { rank: 1, name: "User One", points: 1250, avatar: SampleImg },
@@ -53,14 +48,14 @@ export function HomePage() {
     const [challenges, setChallenges] = useState([]);
     const [loadingChallenges, setLoadingChallenges] = useState(true);
 
-    const friendArt = friends_artWorks[0] // Specifically set to Almond Tree
-
     const [activeArt, setActiveArt] = useState(null);
     const [showSharePopup, setShowSharePopup] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchChallenges();
         fetchUserArtworks();
+        fetchFriendsArtworks();
     }, []);
 
     const fetchUserArtworks = async () => {
@@ -109,6 +104,37 @@ export function HomePage() {
         } finally {
             console.log('HomePage: Setting loadingArtworks to false');
             setLoadingArtworks(false);
+        }
+    };
+
+    const fetchFriendsArtworks = async () => {
+        try {
+            const token = localStorage.getItem('token');
+
+            console.log('HomePage: Fetching friends artworks...');
+            const response = await fetch('http://localhost:3000/api/artworks/friends', {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+
+            console.log('HomePage: Friends artworks response status:', response.status);
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('HomePage: Friends artworks data:', data);
+                setFriendsArtworks(data);
+            } else {
+                const errorText = await response.text();
+                console.error('HomePage: Failed to fetch friends artworks. Status:', response.status);
+                console.error('HomePage: Error response:', errorText);
+                setFriendsArtworks([]);
+            }
+        } catch (error) {
+            console.error('HomePage: Error fetching friends artworks:', error);
+            setFriendsArtworks([]);
+        } finally {
+            setLoadingFriendsArtworks(false);
         }
     };
 
@@ -218,19 +244,48 @@ export function HomePage() {
                     desc={activeArt?.description}
                 />
 
-                <div key={friendArt.author} className='friend-card' onClick={() => setActiveArt(friendArt)}>
-                    <img src={friendArt.img} alt={friendArt.description} className='art-image'></img>
-                </div>
+                {loadingFriendsArtworks ? (
+                    <div className='friends-text-area'>
+                        <h1 className='friendsText'>Loading friends' artworks...</h1>
+                    </div>
+                ) : friendsArtworks.length > 0 ? (
+                    <>
+                        {(() => {
+                            const randomIndex = Math.floor(Math.random() * friendsArtworks.length);
+                            const friendArt = friendsArtworks[randomIndex];
+                            return (
+                                <>
+                                    <div className='friend-card' onClick={() => navigate('/friends-space')}>
+                                        <img src={friendArt.imageURL} alt={friendArt.title} className='art-image'></img>
+                                    </div>
 
-                <div className='friends-text-area'>
-                    <h1 className='friendsText'> Your friends shared their day!</h1>
-                    <BorderlessButton
-                        to='/friends-space'
-                        message='Go to Friends Space'
-                        type='lightbody'
-                        className='friendsButton'>
-                    </BorderlessButton>
-                </div>
+                                    <div className='friends-text-area'>
+                                        <h1 className='friendsText'>Your friends shared their day!</h1>
+                                        <BorderlessButton
+                                            to='/friends-space'
+                                            message='Go to Friends Space'
+                                            type='lightbody'
+                                            className='friendsButton'>
+                                        </BorderlessButton>
+                                    </div>
+                                </>
+                            );
+                        })()}
+                    </>
+                ) : (
+                    <div className='friends-text-area'>
+                        <h1 className='friendsText2'>It's quiet so far today!</h1>
+                        <p className='friends-fallback-message'>
+                            Add more friends and encourage them to share their art 🎨
+                        </p>
+                        <BorderlessButton
+                            to='/friends-space'
+                            message='Find Friends'
+                            type='lightbody'
+                            className='friendsButton'>
+                        </BorderlessButton>
+                    </div>
+                )}
 
             </div>
 
@@ -246,7 +301,7 @@ export function HomePage() {
                 </div>
                 <div className='artWallGrid'>
                     {artWallWorks.slice(0, 8).map((art, index) => (
-                        <div key={index} className='artWallCard' onClick={() => setActiveArt(art)}>
+                        <div key={index} className='artWallCard' onClick={() => navigate('/art-wall')}>
                             <img src={art.img} alt={art.description} className='artWallImage'></img>
                         </div>
                     ))}
@@ -266,21 +321,21 @@ export function HomePage() {
                         <div className='podium-container'>
                             <div className='podium-item rank-2-position'>
                                 <img src={LeaderboardPerson2} alt="2nd place" className='podium-avatar-top' />
-                                <div className='podium-card rank-2'>
+                                <div className='podium-card rank-2' onClick={() => navigate('/leaderboard')}>
                                     <div className='podium-rank'>2</div>
                                 </div>
                             </div>
 
                             <div className='podium-item rank-1-position'>
                                 <div className='podium-avatar-placeholder'>??</div>
-                                <div className='podium-card rank-1'>
+                                <div className='podium-card rank-1' onClick={() => navigate('/leaderboard')}>
                                     <div className='podium-rank'>1</div>
                                 </div>
                             </div>
 
                             <div className='podium-item rank-3-position'>
                                 <img src={LeaderboardPerson1} alt="3rd place" className='podium-avatar-top' />
-                                <div className='podium-card rank-3'>
+                                <div className='podium-card rank-3' onClick={() => navigate('/leaderboard')}>
                                     <div className='podium-rank'>3</div>
                                 </div>
                             </div>
@@ -302,7 +357,7 @@ export function HomePage() {
                                 <p style={{ color: '#FAF3EB', fontSize: '1rem' }}>Loading challenges...</p>
                             ) : challenges.length > 0 ? (
                                 challenges.map((challenge) => (
-                                    <button key={challenge.id} className='challenge-button'>
+                                    <button key={challenge.id} className='challenge-button' onClick={() => navigate('/challenges')}>
                                         {challenge.name}
                                     </button>
                                 ))
