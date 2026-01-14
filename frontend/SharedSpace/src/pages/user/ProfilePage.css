@@ -38,7 +38,7 @@
 }
 
 .profile-streak-card {
-  flex: 1; 
+  flex: 1;
 }
 
 .profile-avatar {
@@ -75,7 +75,7 @@
 
 /* STREAK CARD*/
 .streak-card {
-  background: #E6E3E3;       
+  background: #E6E3E3;
   border-radius: 16px;
   display: flex;
 }
@@ -102,7 +102,7 @@
   margin: 0;
   font-size: 1.4rem;
   line-height: 1.2;
-  color: #E6E3E3;  
+  color: #E6E3E3;
   text-align: center;
 }
 
@@ -115,7 +115,7 @@
 .streak-value h2 {
   margin: 0;
   font-size: 2rem;
-  color: #CD6D6D;          
+  color: #CD6D6D;
 }
 
 /* LAYOUT / under profile header */
@@ -179,13 +179,14 @@
 }
 
 .posts-scroll {
-  max-height: 385px;      
+  max-height: 385px;
   overflow-y: auto;
   padding-right: 0.25rem;
-  mask-image: linear-gradient(to bottom, black 90%, transparent);  
+  mask-image: linear-gradient(to bottom, black 90%, transparent);
 }
 
 .post-card {
+  position: relative;
   aspect-ratio: 1;
   border-radius: 12px;
   overflow: hidden;
@@ -196,6 +197,34 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.2s;
+}
+
+.profile-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.post-card.selection-mode:hover img {
+  transform: scale(1.05);
+}
+
+.post-card.selected {
+  outline: 4px solid #CD6D6D;
+  outline-offset: -4px;
+}
+
+.post-selection-overlay {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 4px;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 /* ACHIEVEMENTS */

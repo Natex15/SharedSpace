@@ -12,24 +12,29 @@ import { Link } from 'react-router-dom'
  * 
  * Note: Provide either 'to' OR 'onClick', not both
  */
-export function BorderedButton({ to, onClick, message, size = 'large', type = 'button' }) {
+export function BorderedButton({ to, onClick, message, size = 'large', type = 'button', disabled = false }) {
     const getButtonClass = () => {
+        let baseClass = '';
         switch (size) {
             case 'purple':
-                return 'borderedButton-purple';
+                baseClass = 'borderedButton-purple';
+                break;
             case 'pink':
-                return 'borderedButton-pink';
+                baseClass = 'borderedButton-pink';
+                break;
             case 'large':
             default:
-                return 'borderedButton-large';
+                baseClass = 'borderedButton-large';
+                break;
         }
+        return disabled ? `${baseClass} disabled` : baseClass;
     };
 
     // If it's a submit button or has an onClick handler, render a standard button
     if (onClick || type === 'submit') {
         return (
             <div className='borderedButton'>
-                <button className={getButtonClass()} onClick={onClick} type={type}>
+                <button className={getButtonClass()} onClick={onClick} type={type} disabled={disabled}>
                     {message}
                 </button>
             </div>
@@ -38,8 +43,8 @@ export function BorderedButton({ to, onClick, message, size = 'large', type = 'b
 
     // Otherwise, render as a Link for navigation
     return (
-        <Link to={to} className='borderedButton'>
-            <button className={getButtonClass()} type={type}>
+        <Link to={to} className='borderedButton' style={disabled ? { pointerEvents: 'none' } : {}}>
+            <button className={getButtonClass()} type={type} disabled={disabled}>
                 {message}
             </button>
         </Link>

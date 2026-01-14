@@ -1,4 +1,5 @@
 import Artwork from "../models/artworkModel.js";
+import mongoose from 'mongoose';
 import { updateStreak } from "./userController.js";
 import { awardStreakBadges } from "../utils/badgeHelper.js";
 import multer from 'multer';
@@ -110,6 +111,26 @@ const deleteArtwork = async (req, res, next) => {
     }
 };
 
+// delete multiple artworks
+const deleteMultipleArtworks = async (req, res, next) => {
+    try {
+        const { ids } = req.body;
+        if (!ids || !Array.isArray(ids)) {
+            return res.status(400).json({ message: 'IDs array is required' });
+        }
+
+        const result = await Artwork.deleteMany({
+            _id: { $in: ids },
+            ownerID: req.user.userId
+        });
+
+        res.status(200).json({ message: `Successfully deleted ${result.deletedCount} artworks` });
+    } catch (err) {
+        console.error('Error deleting multiple artworks:', err);
+        res.status(500).json({ message: 'Unable to delete artworks', error: err.message });
+    }
+};
+
 // update artwork by artworkID
 const updateArtwork = async (req, res, next) => {
     try {
@@ -184,5 +205,5 @@ const getFriendsArtworks = async (req, res, next) => {
 };
 
 export {
-    findAllArtworks, findByOwnerID, findMyArtworks, findByArtworkID, createArtwork, deleteArtwork, updateArtwork, getFriendsArtworks
+    findAllArtworks, findByOwnerID, findMyArtworks, findByArtworkID, createArtwork, deleteArtwork, deleteMultipleArtworks, updateArtwork, getFriendsArtworks
 };

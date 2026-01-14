@@ -136,11 +136,63 @@ export function ProfilePage() {
   const [showFriendsPopup, setShowFriendsPopup] = useState(false);
   const [showSharePopup, setShowSharePopup] = useState(false);
 
+  // SELECTION & DELETE LOGIC
+  const [isSelectionMode, setIsSelectionMode] = useState(false);
+  const [selectedPosts, setSelectedPosts] = useState([]);
+
+  const toggleSelectionMode = () => {
+    setIsSelectionMode(!isSelectionMode);
+    setSelectedPosts([]); // Clear selection when toggling
+  };
+
+  const handleSelectPost = (postId) => {
+    if (selectedPosts.includes(postId)) {
+      setSelectedPosts(selectedPosts.filter(id => id !== postId));
+    } else {
+      setSelectedPosts([...selectedPosts, postId]);
+    }
+  };
+
+  const handleDeleteSelected = async () => {
+    if (selectedPosts.length === 0) return;
+
+    if (!window.confirm(`Are you sure you want to delete ${selectedPosts.length} post(s)?`)) {
+      return;
+    }
+
+    const token = localStorage.getItem('token');
+    try {
+      const response = await fetch('http://localhost:3000/api/artworks/delete-multiple', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ ids: selectedPosts }),
+      });
+
+      if (response.ok) {
+        // Refresh posts
+        setUser(prev => ({
+          ...prev,
+          posts: prev.posts.filter(post => !selectedPosts.includes(post.id)),
+        }));
+        setIsSelectionMode(false);
+        setSelectedPosts([]);
+      } else {
+        const errorData = await response.json();
+        alert(`Failed to delete posts: ${errorData.message || response.statusText}`);
+      }
+    } catch (error) {
+      console.error('Error deleting posts:', error);
+    }
+  };
+
   // For friend request notifications to navigate directly to friends popup
   useEffect(() => {
     if (location.state?.openFriendsTab) {
       setShowFriendsPopup(true);
-      
+
       // Clean up the state so it doesn't re-open on every refresh
       window.history.replaceState({}, document.title);
     }
@@ -181,7 +233,7 @@ export function ProfilePage() {
     }
   };
 
-  
+
   return (
     <div className="profile-page">
       {/* Artwork Detail Popup */}
@@ -262,24 +314,67 @@ export function ProfilePage() {
             <div className="sidebar-card">
               <div className="sidebar-title-row">
                 <h2 className="sidebar-title">Recent Posts</h2>
-                <BorderedButton
-                  onClick={() => setShowSharePopup(true)}
-                  message="Share"
-                  size="purple"
-                />
+                <div className="profile-actions">
+                  {isSelectionMode ? (
+                    <>
+                      <BorderedButton
+                        onClick={handleDeleteSelected}
+                        message={`Delete (${selectedPosts.length})`}
+                        size="purple"
+                        disabled={selectedPosts.length === 0}
+                      />
+                      <BorderedButton
+                        onClick={toggleSelectionMode}
+                        message="Cancel"
+                        size="purple"
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <BorderedButton
+                        onClick={toggleSelectionMode}
+                        message="Select"
+                        size="purple"
+                      />
+                      <BorderedButton
+                        onClick={() => setShowSharePopup(true)}
+                        message="Share"
+                        size="purple"
+                      />
+                    </>
+                  )}
+                </div>
               </div>
 
               <div className="posts-scroll">
                 <div className="posts-grid">
-                  {user.posts.map((post, i) => (
-                    <div
-                      key={i}
-                      className="post-card"
-                      onClick={() => setActiveArt(post)}
-                    >
-                      <img src={post.img} alt={post.title} />
-                    </div>
-                  ))}
+                  {user.posts.map((post, i) => {
+                    const isSelected = selectedPosts.includes(post.id);
+                    return (
+                      <div
+                        key={i}
+                        className={`post-card ${isSelectionMode ? 'selection-mode' : ''} ${isSelected ? 'selected' : ''}`}
+                        onClick={() => {
+                          if (isSelectionMode) {
+                            handleSelectPost(post.id);
+                          } else {
+                            setActiveArt(post);
+                          }
+                        }}
+                      >
+                        <img src={post.img} alt={post.title} />
+                        {isSelectionMode && (
+                          <div className="post-selection-overlay">
+                            <input
+                              type="checkbox"
+                              checked={isSelected}
+                              readOnly
+                            />
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -307,7 +402,7 @@ export function ProfilePage() {
                 <div className="achievements-list">
                   {paginatedAchievements.map(ach => {
                     const imgSrc = BADGE_MAP[ach.iconURL] || ach.iconURL;
-                    
+
                     return (
                       <div key={ach._id} className="achievement-item" title={ach.badgeName}>
                         <img src={imgSrc} alt={ach.badgeName} className="achievement-img" />

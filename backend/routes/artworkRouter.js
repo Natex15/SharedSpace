@@ -6,6 +6,7 @@ import {
   findByArtworkID,
   createArtwork,
   deleteArtwork,
+  deleteMultipleArtworks,
   updateArtwork,
   getFriendsArtworks
 } from '../controllers/artworkController.js';
@@ -46,6 +47,7 @@ router.get('/:id', verifyToken, findByArtworkID);
 router.post('/owner', verifyToken, findByOwnerID);
 router.post('/create/', verifyToken, createArtwork);
 router.put('/update/:id', verifyToken, updateArtwork);
+router.post('/delete-multiple', verifyToken, deleteMultipleArtworks);
 router.delete('/delete/:id', verifyToken, deleteArtwork);
 
 export default router;
