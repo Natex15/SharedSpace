@@ -37,7 +37,7 @@ export function SignUpPage() {
       const data = await response.json();
 
       if (response.ok) {
-        navigate('/login');  // Redirects to login page.
+        navigate('/home');  // Redirects to login page.
       } else {
         setError(data.error || 'Registration failed. Try a different email/username.');
       }

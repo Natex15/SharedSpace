@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BorderedButton } from './BorderedButton';
 import './EditProfilePopup.css';
 
- /**
+/**
  * EditProfilePopup Component
  * 
  * A modal form that allows users to update their profile information.
@@ -97,6 +97,42 @@ export function EditProfilePopup({ isOpen, onClose, user, onSave }) {
         onClose();
     };
 
+    // Handle account deletion
+    const handleDeleteAccount = async () => {
+        const confirmed = window.confirm(
+            "Are you sure you want to delete your account? This action cannot be undone."
+        );
+
+        if (!confirmed) return;
+
+        try {
+            const token = localStorage.getItem('token');
+
+            const response = await fetch('http://localhost:3000/api/users/delete', {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to delete account');
+            }
+
+            // Clear auth data
+            localStorage.removeItem('token');
+
+            alert('Your account has been deleted.');
+
+            // Redirect to login or landing page
+            window.location.href = '/login';
+
+        } catch (error) {
+            console.error(error);
+            alert('Error deleting account.');
+        }
+    };
+
     if (!isOpen) return null;
 
     return (
@@ -104,6 +140,12 @@ export function EditProfilePopup({ isOpen, onClose, user, onSave }) {
             <div className="edit-popup-container" onClick={(e) => e.stopPropagation()}>
                 <div className="edit-header">
                     <h2>Edit Profile</h2>
+                    <BorderedButton
+                        message="Delete Account"
+                        size="pink"
+                        onClick={handleDeleteAccount}
+                        className="delete-account-topright"
+                    />
                 </div>
                 <div className="edit-body">
                     <form onSubmit={handleSubmit}>
@@ -155,8 +197,17 @@ export function EditProfilePopup({ isOpen, onClose, user, onSave }) {
                             />
                         </div>
                         <div className="edit-popup-buttons">
-                            <BorderedButton message="Save Changes" size="pink" type="submit" onClick={() => {}} />
-                            <BorderedButton message="Cancel" size="pink" onClick={onClose} />
+                            <BorderedButton
+                                message="Save Changes"
+                                size="pink"
+                                type="submit"
+                                onClick={() => {}}
+                            />
+                            <BorderedButton
+                                message="Cancel"
+                                size="pink"
+                                onClick={onClose}
+                            />
                         </div>
                     </form>
                 </div>

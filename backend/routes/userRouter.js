@@ -21,7 +21,7 @@ router.post('/find', verifyToken, findByUserEmail);
 router.put('/streak', verifyToken, streakCheckIn);
 router.get('/get-streak', verifyToken, getStreak);
 router.post('/findByUsername', verifyToken, findByUsername);
-router.delete('/delete', verifyToken, isAdmin, deleteUser);
+router.delete('/delete', verifyToken, deleteUser);
 
 router.post('/friends/request', verifyToken, sendFriendRequest);
 router.post('/friends/accept', verifyToken, acceptFriendRequest);

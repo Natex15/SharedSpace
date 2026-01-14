@@ -104,6 +104,9 @@ export function ArtWallPage() {
                                     alt='Artwork'
                                     className='artWork'
                                 />
+                                <div className='artwork-username'>
+                                    {art.ownerID?.username}
+                                </div>
                             </div>
                         ))
                     }

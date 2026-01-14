@@ -1,9 +1,11 @@
 import bcrypt from "bcrypt";
 import mongoose from 'mongoose';
 import User from '../models/userModel.js';
+import Artwork from '../models/artworkModel.js';
 import { sendNotification } from "../utils/notificationHelper.js";
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import cloudinary from 'cloudinary';
 
 dotenv.config();
 const SECRET_KEY = process.env.SECRET_KEY;
@@ -26,17 +28,68 @@ const findByUserEmail = async (req, res, next) => {
     }
 };
 
-// delete user by email
-const deleteUser = async (req, res, next) => {
+const getPublicIdFromUrl = (url) => {
+    if (!url || !url.includes('cloudinary')) return null;
+    
+    const parts = url.split('/');
+    const filename = parts.pop(); // name.ext
+    const maybeFolder = parts.pop(); // folder or upload
+
+    const baseName = filename.split('?')[0].split('.')[0];
+    if (!baseName) return null;
+
+    // If there is a folder between version and filename keep it, else just filename
+    const folder = maybeFolder && !maybeFolder.startsWith('v') ? `${maybeFolder}/` : '';
+    return `${folder}${baseName}`;
+};
+
+const deleteUser = async (req, res) => {
     try {
-        const dUser = await User.findOneAndDelete({ email: req.body.email });
-        if (!dUser) {
-            return res.status(404).send('User not found');
+        const userId = req.user.userId;
+
+        // Find artworks owned by user
+        const artworks = await Artwork.find({ ownerID: userId });
+
+        // Delete images from Cloudinary
+        for (const artwork of artworks) {
+            const publicId = getPublicIdFromUrl(artwork.imageURL);
+            if (!publicId) continue;
+
+            try {
+                await cloudinary.v2.uploader.destroy(publicId);
+            } catch (cloudErr) {
+                console.error(`Failed to delete cloud asset for artwork ${artwork._id}:`, cloudErr);
+            }
         }
-        return res.status(200).send(`Successfully deleted user with email: ${dUser.email}`);
-    } catch (err) {
-        console.error('Error deleting user:', err);
-        res.status(500).send('Unable to delete user');
+
+        // Delete artworks from DB
+        await Artwork.deleteMany({ ownerID: userId });
+
+        // Remove user from friends & requests
+        await User.updateMany(
+            { friends: userId },
+            { $pull: { friends: userId } }
+        );
+
+        await User.updateMany(
+            { friendRequests: userId },
+            { $pull: { friendRequests: userId } }
+        );
+
+        // Delete user
+        const deletedUser = await User.findByIdAndDelete(userId);
+
+        if (!deletedUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        return res.status(200).json({
+            message: "User account and all artworks deleted successfully"
+        });
+
+    } catch (error) {
+        console.error("Delete user cascade error:", error);
+        res.status(500).json({ message: "Failed to delete user" });
     }
 };
 

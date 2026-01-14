@@ -48,6 +48,11 @@ export function ArtPopup({ trigger, setTrigger, img, date, desc, author, authorI
                                 alt="Artwork"
                                 style={{ transform: `scale(${zoom / 100})` }}
                             />
+                            {author && (
+                                <div className="watermark">
+                                    {author}
+                                </div>
+                            )}
                         </div>
                         <div className="zoom-controls">
                             <button className="zoom-btn" onClick={handleZoomOut} disabled={zoom <= 50}>
