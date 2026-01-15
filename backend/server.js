@@ -27,14 +27,10 @@ cloudinary.v2.config({
 const app = express();
 app.use(express.json());
 
-const corsOptions = {
-  origin: 'https://shared-space-xi.vercel.app', // Allow only this origin
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],    // Allow these HTTP methods
-  allowedHeaders: ['Content-Type', 'Authorization'], // Allow these headers
-  credentials: true // Allow cookies/sessions if needed
-};
-
-app.use(cors(corsOptions));
+app.use(cors({
+  origin: process.env.FRONTEND_URL || true,
+  credentials: true
+}));
 
 app.options('*', cors(corsOptions));
 
