@@ -5,7 +5,7 @@ import {
     getFriendsList, getPendingRequests, findByUserEmail, findByUsername,
     deleteUser, updateUser, findCurrentUser, getOutgoingRequests,
     cancelOutgoingRequest, streakCheckIn, getUserAchievements, getStreak,
-    deleteCurrentUserAccount
+    deleteCurrentUserAccount, banUser
 } from '../controllers/userController.js';
 import { isAdmin, verifyToken } from '../middleware/auth.js';
 
