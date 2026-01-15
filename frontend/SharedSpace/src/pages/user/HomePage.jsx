@@ -295,7 +295,7 @@ export function HomePage() {
                     <div className='friends-text-area'>
                         <h1 className='friendsText2'>It's quiet so far today!</h1>
                         <p className='friends-fallback-message'>
-                            Add more friends and encourage them to share their art 🎨
+                            Add more friends and encourage them to share their art
                         </p>
                         <BorderlessButton
                             to='/friends-space'
@@ -326,10 +326,9 @@ export function HomePage() {
                     ) : (
                         artWallPreviewWorks.map((art, index) => (
                             <div key={index} className='artWallCard' onClick={() => navigate('/art-wall')}>
-                                <img src={art.imageURL} alt={art.title} className='artWallImage'></img>
+                                <img src={art.img} alt={art.description} className='artWallImage'></img>
                             </div>
-                        ))
-                    )}
+                        )))}
                 </div>
             </div>
 
