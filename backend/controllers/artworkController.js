@@ -18,7 +18,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 const findAllArtworks = async (req, res, next) => {
     try {
-        const artworks = await Artwork.find().populate('ownerID', 'username profilePicture');
+        const artworks = await Artwork.find().populate('ownerID', 'username profilePicture').sort({ uploadDate: -1 });
 
         // Filter out artworks where owner no longer exists (orphaned)
         const validArtworks = artworks.filter(art => art.ownerID !== null);
