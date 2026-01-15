@@ -88,6 +88,7 @@ export function ArtWallPage() {
                 desc={activeArt?.description}
                 author={activeArt?.ownerID?.username}
                 authorImg={activeArt?.ownerID?.profilePicture}
+                id={activeArt?._id}
             />
             <h1 className='aw-title'>Art Wall</h1>
             <p className='aw-subtitle'>See what the community's been creating lately 🎨</p>

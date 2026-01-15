@@ -4,131 +4,244 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(52, 21, 57, 0.4);
+    /* Muted purple semi-transparent */
+    backdrop-filter: blur(8px);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 9999;
+    animation: fadeIn 0.3s ease-out;
 }
 
 .report-popup-content {
-    width: 400px;
-    background-color: #FFFFFF;
+    width: 100%;
+    max-width: 480px;
+    background: #FAF3EB;
+    /* Website background color */
+    border: 1px solid rgba(237, 168, 168, 0.5);
+    /* Soft pink border */
+    border-radius: 24px;
     padding: 32px;
-    border-radius: 12px;
     position: relative;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 25px 50px -12px rgba(52, 21, 57, 0.2);
+    animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.close-button {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    background: none;
-    border: none;
-    color: #2D3748;
-    cursor: pointer;
-    padding: 4px;
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.report-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.report-icon-wrapper {
+    width: 48px;
+    height: 48px;
+    background: rgba(237, 168, 168, 0.2);
+    /* Soft pink background */
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: color 0.2s;
+    color: #CB6D6D;
+    /* Deep rose/pink from website */
 }
 
-.close-button:hover {
-    color: #1A202C;
-}
-
-.close-button svg {
-    width: 20px;
-    height: 20px;
+.report-title-group {
+    flex: 1;
 }
 
 .report-title {
-    margin: 0 0 24px 0;
-    font-size: 20px;
-    font-weight: 600;
-    color: #1A202C;
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+    color: #341539;
+    /* Deep purple text from website */
+    letter-spacing: -0.02em;
+    font-family: 'Poppins', sans-serif;
+}
+
+.report-subtitle {
+    margin: 4px 0 0 0;
+    font-size: 14px;
+    color: #5C5A7B;
+    /* Muted blue-grey from website */
+    font-family: 'Poppins', sans-serif;
+}
+
+.close-button {
+    background: rgba(52, 21, 57, 0.05);
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #5C5A7B;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.close-button:hover {
+    background: rgba(203, 109, 109, 0.1);
+    color: #CB6D6D;
+    transform: rotate(90deg);
 }
 
 .form-group {
     margin-bottom: 24px;
 }
 
-.form-group label {
+.form-label {
     display: block;
-    margin-bottom: 8px;
     font-size: 14px;
-    font-weight: 500;
-    color: #2D3748;
+    font-weight: 600;
+    color: #341539;
+    margin-bottom: 12px;
+    font-family: 'Poppins', sans-serif;
 }
 
-.description-textarea {
+.reason-textarea {
     width: 100%;
-    padding: 12px;
-    border: 1px solid #CBD5E0;
-    border-radius: 6px;
-    font-size: 14px;
-    font-family: inherit;
-    resize: vertical;
-    background-color: #F7FAFC;
-    transition: border-color 0.2s;
+    padding: 16px;
+    background: white;
+    border: 2px solid rgba(237, 168, 168, 0.3);
+    border-radius: 16px;
+    color: #341539;
+    font-size: 15px;
+    font-family: 'Poppins', sans-serif;
+    resize: none;
+    transition: all 0.2s;
+    line-height: 1.6;
 }
 
-.description-textarea:focus {
+.reason-textarea:focus {
     outline: none;
-    border-color: #4299E1;
-    background-color: #FFFFFF;
+    border-color: #EDA8A8;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(237, 168, 168, 0.1);
 }
 
-.button-group {
+.reason-textarea::placeholder {
+    color: #8B8BA3;
+    opacity: 0.5;
+}
+
+.report-footer {
     display: flex;
     gap: 12px;
+    margin-top: 32px;
 }
 
-.submit-button {
+.cancel-button {
     flex: 1;
-    padding: 10px 24px;
-    background-color: #E53E3E;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: 500;
+    padding: 14px;
+    background: white;
+    border: 2px solid rgba(237, 168, 168, 0.3);
+    border-radius: 14px;
+    color: #5C5A7B;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: all 0.2s;
 }
 
-.submit-button:hover {
-    background-color: #C53030;
+.cancel-button:hover {
+    background: #FFE2E2;
+    border-color: #EDA8A8;
+    color: #CB6D6D;
 }
 
-.close-button-bottom {
-    flex: 1;
-    padding: 10px 24px;
-    background-color: #E2E8F0;
-    color: #2D3748;
+.submit-report-button {
+    flex: 2;
+    padding: 14px;
+    background: #CB6D6D;
+    /* Deep rose from website */
     border: none;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: 500;
+    border-radius: 14px;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 10px 20px -5px rgba(203, 109, 109, 0.3);
 }
 
-.close-button-bottom:hover {
-    background-color: #CBD5E0;
+.submit-report-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    background: #EDA8A8;
+    box-shadow: 0 15px 30px -5px rgba(203, 109, 109, 0.4);
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .report-popup-content {
-        width: 90%;
-        max-width: 400px;
-        padding: 24px;
+.submit-report-button:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.submit-report-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background: #8B8BA3;
+}
+
+.loader {
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-bottom-color: white;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
     }
-    
-    .button-group {
-        flex-direction: column;
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 480px) {
+    .report-popup-content {
+        padding: 24px;
+        margin: 20px;
+        border-radius: 20px;
+    }
+
+    .report-footer {
+        flex-direction: column-reverse;
     }
 }

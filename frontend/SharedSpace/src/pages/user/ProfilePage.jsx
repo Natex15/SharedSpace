@@ -254,6 +254,7 @@ export function ProfilePage() {
         desc={activeArt?.description || ''}
         author={user.username}
         authorImg={user.avatar}
+        id={activeArt?.id}
       />
 
       {/* Edit Profile Modal */}

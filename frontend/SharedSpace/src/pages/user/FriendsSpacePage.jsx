@@ -108,6 +108,7 @@ export function FriendsSpacePage() {
                 desc={selectedArt?.description || selectedArt?.title}
                 author={selectedArt?.ownerID?.username || selectedArt?.author}
                 authorImg={selectedArt?.ownerID?.profilePicture || selectedArt?.authorImg}
+                id={selectedArt?._id || selectedArt?.id}
             />
             {loadingFriendsArtworks ? (
                 <div className='fs-content-wrapper'>

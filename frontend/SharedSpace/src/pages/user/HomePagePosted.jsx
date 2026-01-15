@@ -124,7 +124,8 @@ export function HomePagePosted() {
                         img: sortedArtworks[0].imageURL,
                         date: new Date(sortedArtworks[0].uploadDate).toLocaleDateString(),
                         description: sortedArtworks[0].title,
-                        author: "You"
+                        author: "You",
+                        id: sortedArtworks[0]._id
                     });
                 }
 
@@ -135,7 +136,8 @@ export function HomePagePosted() {
                         img: artwork.imageURL,
                         date: new Date(artwork.uploadDate).toLocaleDateString(),
                         description: artwork.title,
-                        author: "You"
+                        author: "You",
+                        id: artwork._id
                     }));
 
                 console.log('HomePagePosted: Setting artworks to:', recentWorks);
@@ -271,8 +273,10 @@ export function HomePagePosted() {
                     trigger={activeArt != null}
                     setTrigger={() => setActiveArt(null)}
                     img={activeArt?.img}
-                    date={activeArt?.date}
-                    desc={activeArt?.description}
+                    date={activeArt?.date || activeArt?.uploadDate}
+                    desc={activeArt?.description || activeArt?.title}
+                    author={activeArt?.author || activeArt?.ownerID?.username}
+                    id={activeArt?.id || activeArt?._id}
                 />
 
                 {loadingArtworks ? (
@@ -316,8 +320,10 @@ export function HomePagePosted() {
                     trigger={activeArt != null}
                     setTrigger={() => setActiveArt(null)}
                     img={activeArt?.img}
-                    date={activeArt?.date}
-                    desc={activeArt?.description}
+                    date={activeArt?.date || activeArt?.uploadDate}
+                    desc={activeArt?.description || activeArt?.title}
+                    author={activeArt?.author || activeArt?.ownerID?.username}
+                    id={activeArt?.id || activeArt?._id}
                 />
 
                 {loadingFriendsArtworks ? (

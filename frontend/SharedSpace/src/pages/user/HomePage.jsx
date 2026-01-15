@@ -96,7 +96,8 @@ export function HomePage() {
                         img: artwork.imageURL,
                         date: new Date(artwork.uploadDate).toLocaleDateString(),
                         description: artwork.title,
-                        author: "You"
+                        author: "You",
+                        id: artwork._id
                     }));
 
                 console.log('HomePage: Setting artworks to:', sortedArtworks);
@@ -215,6 +216,7 @@ export function HomePage() {
                     desc={activeArt?.description || activeArt?.title}
                     author={activeArt?.author || activeArt?.ownerID?.username}
                     authorImg={activeArt?.authorImg || activeArt?.ownerID?.profilePicture}
+                    id={activeArt?.id || activeArt?._id}
                 />
 
                 {loadingArtworks ? (
@@ -262,6 +264,7 @@ export function HomePage() {
                     desc={activeArt?.description || activeArt?.title}
                     author={activeArt?.author || activeArt?.ownerID?.username}
                     authorImg={activeArt?.authorImg || activeArt?.ownerID?.profilePicture}
+                    id={activeArt?.id || activeArt?._id}
                 />
 
                 {loadingFriendsArtworks ? (

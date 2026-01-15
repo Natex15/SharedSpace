@@ -10,7 +10,7 @@ function formatDate(isoDateString) {
     return `${month}/${day}/${year}`;
 }
 
-export function ArtPopup({ trigger, setTrigger, img, date, desc, author, authorImg }) {
+export function ArtPopup({ trigger, setTrigger, img, date, desc, author, authorImg, id }) {
     const [zoom, setZoom] = useState(100);
     const [report, setReport] = useState(false);
 
@@ -31,7 +31,7 @@ export function ArtPopup({ trigger, setTrigger, img, date, desc, author, authorI
 
     return (
         <div className="popup-overlay" onClick={handleClose}>
-            <ReportPopup trigger={report} setTrigger={setReport} />
+            <ReportPopup trigger={report} setTrigger={setReport} artworkID={id} />
             <div className="popup-content" onClick={(e) => e.stopPropagation()}>
                 <div className="popup-left">
                     <button className="back-button" onClick={handleClose}>
