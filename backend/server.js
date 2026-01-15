@@ -27,16 +27,17 @@ cloudinary.v2.config({
 const app = express();
 app.use(express.json());
 
+// 1. Allow 'OPTIONS' method explicitly
+// 2. Use origin: true (This tells CORS to reflect the request origin)
 const corsOptions = {
-  origin: 'https://shared-space-xi.vercel.app', // Allow only this origin
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],    // Allow these HTTP methods
-  allowedHeaders: ['Content-Type', 'Authorization'], // Allow these headers
-  credentials: true // Allow cookies/sessions if needed
+  origin: true, 
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Added OPTIONS
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 };
 
 app.use(cors(corsOptions));
-
-app.options('*', cors(corsOptions));
+app.options('*', cors(corsOptions)); // Handle preflight
 
 //connect mongodb
 // This ensures it works whether you use MONGO_URI (code) or MONGODB_URI (README)
