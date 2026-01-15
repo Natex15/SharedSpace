@@ -643,9 +643,25 @@ const deleteCurrentUserAccount = async (req, res, next) => {
     }
 };
 
+const banUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const user = await User.findById(id);
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        user.userType = 'blocked';
+        user.isBanned = true;
+        await user.save();
+
+        res.status(200).json({ message: `User ${user.username} has been blocked.` });
+    } catch (error) {
+        res.status(500).json({ message: "Failed to ban user", error: error.message });
+    }
+};
+
 export {
     findByUserEmail, deleteUser, updateUser, findByUsername, findCurrentUser, registerUser,
     loginUser, getRegisteredUsers, getUserById, sendFriendRequest, acceptFriendRequest, declineFriendRequest,
     removeFriend, getFriendsList, getPendingRequests, getOutgoingRequests, cancelOutgoingRequest,
-    updateStreak, streakCheckIn, getUserAchievements, getStreak, deleteCurrentUserAccount
+    updateStreak, streakCheckIn, getUserAchievements, getStreak, deleteCurrentUserAccount, banUser
 };

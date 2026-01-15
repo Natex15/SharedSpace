@@ -31,8 +31,8 @@ export const createReport = async (req, res) => {
 
     await sendNotification(
       artwork.ownerID,
-      'report_update', 
-      'Content Flagged', 
+      'report_update',
+      'Content Flagged',
       `Your artwork "${artwork.title}" has been flagged for a community review.`
     );
 
@@ -47,9 +47,9 @@ export const createReport = async (req, res) => {
 export const getAllReports = async (req, res) => {
   try {
     const reports = await Report.find()
-    .populate('artworkID', 'title imageURL')
-    .populate('reporterID', 'username');
-    
+      .populate('artworkID', 'title imageURL')
+      .populate('reporterID', 'username');
+
     res.json(reports);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -82,13 +82,13 @@ export const updateReportStatus = async (req, res) => {
     if (!updatedReport) return res.status(404).json({ message: 'Report not found' });
 
     if (status === 'resolved') {
-        // Notify the reporter that action was taken
-        await sendNotification(
-          updatedReport.reporterID,
-          'system_alert',
-          'Report Resolved',
-          'Thank you! The content you reported has been reviewed and handled.'
-        );
+      // Notify the reporter that action was taken
+      await sendNotification(
+        updatedReport.reporterID,
+        'system_alert',
+        'Report Resolved',
+        'Thank you! The content you reported has been reviewed and handled.'
+      );
     }
     res.json({ message: 'Report status updated', report: updatedReport });
   } catch (error) {
@@ -108,3 +108,43 @@ export const deleteReport = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// handle complex report actions
+export const handleReportAction = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { action } = req.body; // 'remove_content', 'ban_user', 'ignore'
+
+    const report = await Report.findById(id).populate('artworkID');
+    if (!report) return res.status(404).json({ message: 'Report not found' });
+
+    const artwork = report.artworkID;
+
+    if (action === 'remove_content') {
+      if (artwork) {
+        // Logic to delete artwork (similar to artworkController.deleteArtwork)
+        // For simplicity, we just delete the document. Ideally, also delete from Cloudinary.
+        await Artwork.findByIdAndDelete(artwork._id);
+      }
+      await Report.findByIdAndDelete(id);
+      return res.json({ message: 'Content removed and report resolved.' });
+
+    } else if (action === 'ban_user') {
+      if (artwork && artwork.ownerID) {
+        const User = (await import('../models/userModel.js')).default;
+        await User.findByIdAndUpdate(artwork.ownerID, { userType: 'blocked', isBanned: true });
+      }
+      await Report.findByIdAndDelete(id);
+      return res.json({ message: 'User banned and report resolved.' });
+
+    } else if (action === 'ignore') {
+      await Report.findByIdAndDelete(id);
+      return res.json({ message: 'Report ignored/deleted.' });
+    }
+
+    res.status(400).json({ message: 'Invalid action' });
+  } catch (error) {
+    console.error('Error handling report action:', error);
+    res.status(500).json({ message: 'Failed to handle report action', error: error.message });
+  }
+}

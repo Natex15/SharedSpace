@@ -4,7 +4,8 @@ import {
   getAllReports,
   getReportById,
   updateReportStatus,
-  deleteReport
+  deleteReport,
+  handleReportAction
 } from '../controllers/reportController.js';
 import { verifyToken, isAdmin } from '../middleware/auth.js';
 
@@ -18,5 +19,6 @@ router.get('/:id', verifyToken, getReportById);
 router.get('/', verifyToken, isAdmin, getAllReports);
 router.put('/:id/status', verifyToken, isAdmin, updateReportStatus);
 router.delete('/:id', verifyToken, isAdmin, deleteReport);
+router.post('/action/:id', verifyToken, isAdmin, handleReportAction);
 
 export default router;

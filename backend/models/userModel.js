@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema({
   userType: {
     type: String,
     default: "user",
-    enum: ["admin", "user"]
+    enum: ["admin", "user", "blocked"]
   },
   profilePicture: {
     type: String
@@ -38,7 +38,7 @@ const userSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
-isBanned: {
+  isBanned: {
     type: Boolean,
     default: false
   },
@@ -46,8 +46,8 @@ isBanned: {
   lastActivityDate: {
     type: Date
   },
-  badges: [{ 
-    type: mongoose.Schema.Types.ObjectId, 
+  badges: [{
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'Badge'
   }],
   friends: [{

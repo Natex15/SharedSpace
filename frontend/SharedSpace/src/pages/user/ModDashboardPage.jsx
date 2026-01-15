@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import SampleImg from '../../assets/arts/ukiyo.jpg';
-import SampleImg2 from '../../assets/arts/almondtree.jpg';
 import './ModDashboardPage.css';
 import API_BASE_URL from '../../apiConfig';
 import { SuccessPopup } from '../../components/SuccessPopup';
+import toast from 'react-hot-toast';
 
 export function ModDashboardPage() {
   const [activeTab, setActiveTab] = useState('users');
@@ -24,66 +24,67 @@ export function ModDashboardPage() {
   });
   const [newTag, setNewTag] = useState({ name: '', points: 1 });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const token = localStorage.getItem('token');
-      if (!token) return;
+  const fetchData = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
 
-      try {
-        // Fetch users
-        const usersResponse = await fetch(`${API_BASE_URL}/api/users/all`, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        });
-        if (usersResponse.ok) {
-          const usersData = await usersResponse.json();
-          const formattedUsers = usersData.users
-            .filter(user => user.userType !== 'admin')
-            .map(user => ({
-              id: user._id,
-              username: user.username,
-              email: user.email,
-              type: 'User',
-              date: new Date(parseInt(user._id.substring(0, 8), 16) * 1000).toISOString().split('T')[0]
-            }));
-          setUsers(formattedUsers);
-        }
-
-        // Fetch reports
-        const reportsResponse = await fetch(`${API_BASE_URL}/api/reports/`, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        });
-        if (reportsResponse.ok) {
-          const reportsData = await reportsResponse.json();
-          const formattedReports = reportsData.map(report => ({
-            id: report._id,
-            preview: report.artworkID?.imageURL || SampleImg,
-            reason: report.reason,
-            date: new Date(parseInt(report._id.substring(0, 8), 16) * 1000).toISOString().split('T')[0]
+    setLoading(true);
+    try {
+      // Fetch users
+      const usersResponse = await fetch(`${API_BASE_URL}/api/users/all`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      if (usersResponse.ok) {
+        const usersData = await usersResponse.json();
+        const formattedUsers = usersData.users
+          .filter(user => user.userType !== 'admin')
+          .map(user => ({
+            id: user._id,
+            username: user.username,
+            email: user.email,
+            type: user.userType === 'blocked' ? 'Blocked' : 'User',
+            date: new Date(parseInt(user._id.substring(0, 8), 16) * 1000).toISOString().split('T')[0]
           }));
-          setReports(formattedReports);
-        }
-
-        // Fetch challenges
-        const challengesResponse = await fetch(`${API_BASE_URL}/api/challenges/all`, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        });
-        if (challengesResponse.ok) {
-          const challengesData = await challengesResponse.json();
-          setChallenges(challengesData);
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        setLoading(false);
+        setUsers(formattedUsers);
       }
-    };
 
+      // Fetch reports
+      const reportsResponse = await fetch(`${API_BASE_URL}/api/reports/`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      if (reportsResponse.ok) {
+        const reportsData = await reportsResponse.json();
+        const formattedReports = reportsData.map(report => ({
+          id: report._id,
+          preview: report.artworkID?.imageURL || SampleImg,
+          reason: report.reason,
+          date: new Date(parseInt(report._id.substring(0, 8), 16) * 1000).toISOString().split('T')[0]
+        }));
+        setReports(formattedReports);
+      }
+
+      // Fetch challenges
+      const challengesResponse = await fetch(`${API_BASE_URL}/api/challenges/all`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      if (challengesResponse.ok) {
+        const challengesData = await challengesResponse.json();
+        setChallenges(challengesData);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchData();
   }, []);
 
@@ -116,8 +117,7 @@ export function ModDashboardPage() {
       });
 
       if (response.ok) {
-        setSuccessMessage('Challenge created successfully!');
-        setShowSuccessPopup(true);
+        toast.success('New challenge published! 🏆');
         setChallengeForm({
           title: '',
           description: '',
@@ -125,23 +125,120 @@ export function ModDashboardPage() {
           endDate: '',
           criteriaTags: []
         });
-        // Refresh challenges list
-        const challengesResponse = await fetch(`${API_BASE_URL}/api/challenges/all`, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        });
-        if (challengesResponse.ok) {
-          const challengesData = await challengesResponse.json();
-          setChallenges(challengesData);
-        }
+        fetchData();
       } else {
         const errorData = await response.json();
-        alert(`Failed to create challenge: ${errorData.message}`);
+        toast.error(`Error: ${errorData.message}`);
       }
     } catch (error) {
       console.error('Error creating challenge:', error);
-      alert('Error creating challenge');
+      toast.error('Failed to create challenge');
+    }
+  };
+
+  const handleUserAction = (userId, action) => {
+    if (!action || action === 'ignore') {
+      if (action === 'ignore') toast('Action dismissed');
+      return;
+    }
+
+    toast((t) => (
+      <span className="confirmation-toast">
+        Are you sure you want to <b>{action}</b> this user?
+        <div className="confirmation-buttons">
+          <button
+            className="confirm-yes"
+            onClick={async () => {
+              toast.dismiss(t.id);
+              await executeUserAction(userId, action);
+            }}
+          >
+            Yes
+          </button>
+          <button
+            className="confirm-no"
+            onClick={() => toast.dismiss(t.id)}
+          >
+            No
+          </button>
+        </div>
+      </span>
+    ), { duration: 5000, position: 'top-center' });
+  };
+
+  const executeUserAction = async (userId, action) => {
+    const token = localStorage.getItem('token');
+    try {
+      if (action === 'ban') {
+        const response = await fetch(`${API_BASE_URL}/api/users/ban/${userId}`, {
+          method: 'PUT',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (response.ok) {
+          toast.success('User has been blocked 🚫');
+          fetchData();
+        } else {
+          toast.error('Failed to ban user');
+        }
+      }
+    } catch (error) {
+      toast.error('Action failed');
+    }
+  };
+
+  const handleReportAction = (reportId, action) => {
+    if (!action) return;
+
+    if (action === 'ignore') {
+      executeReportAction(reportId, action);
+      return;
+    }
+
+    toast((t) => (
+      <span className="confirmation-toast">
+        Confirm <b>{action.replace('_', ' ')}</b>?
+        <div className="confirmation-buttons">
+          <button
+            className="confirm-yes"
+            onClick={async () => {
+              toast.dismiss(t.id);
+              await executeReportAction(reportId, action);
+            }}
+          >
+            Yes
+          </button>
+          <button
+            className="confirm-no"
+            onClick={() => toast.dismiss(t.id)}
+          >
+            No
+          </button>
+        </div>
+      </span>
+    ), { duration: 5000, position: 'top-center' });
+  };
+
+  const executeReportAction = async (reportId, action) => {
+    const token = localStorage.getItem('token');
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/reports/action/${reportId}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ action: action })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        toast.success(data.message || 'Action completed');
+        fetchData();
+      } else {
+        toast.error('Action failed');
+      }
+    } catch (error) {
+      toast.error('Network error');
     }
   };
 
@@ -175,10 +272,12 @@ export function ModDashboardPage() {
         <div className="mod-main">
           <div className="card-shadow content-card">
             {loading ? (
-              <div>Loading...</div>
+              <div className="mod-loading">
+                <div className="spinner"></div>
+                <p>Retrieving database records...</p>
+              </div>
             ) : activeTab === 'users' ? (
               <>
-                {/* Users header */}
                 <div className="table-header">
                   <span>Username</span>
                   <span>Email</span>
@@ -187,30 +286,33 @@ export function ModDashboardPage() {
                   <span>Action</span>
                 </div>
 
-                {/* Users body */}
                 <div className="table-body">
-                  {users.map(user => (
+                  {users.length === 0 ? (
+                    <p className="empty-state">No users found in records.</p>
+                  ) : users.map(user => (
                     <div key={user.id} className="table-row">
-                      <span>{user.username}</span>
-                      <span>{user.email}</span>
-                      <span>{user.type}</span>
+                      <span className="username-cell">{user.username}</span>
+                      <span className="email-cell">{user.email}</span>
+                      <span className="type-cell">{user.type}</span>
                       <span>{user.date}</span>
 
-                      {/* Dropdown */}
-                      <select className="action-select">
-                        <option value="">Select</option>
-                        <option value="ban">Ban User</option>
-                        <option value="delete">Ignore</option>
-                      </select>
-
+                      <div className="select-wrapper">
+                        <select
+                          className="action-select"
+                          onChange={(e) => handleUserAction(user.id, e.target.value)}
+                          value=""
+                        >
+                          <option value="">Select</option>
+                          <option value="ban" disabled={user.type === 'Blocked'}>Ban User</option>
+                          <option value="ignore">Dismiss</option>
+                        </select>
+                      </div>
                     </div>
                   ))}
                 </div>
               </>
             ) : activeTab === 'reports' ? (
               <>
-                {/* Moderating posts */}
-                {/* Posts Header */}
                 <div className="table-header">
                   <span>Report ID</span>
                   <span>Preview</span>
@@ -219,114 +321,126 @@ export function ModDashboardPage() {
                   <span>Action</span>
                 </div>
 
-                {/* Posts Body */}
                 <div className="table-body">
-                  {reports.map(report => (
+                  {reports.length === 0 ? (
+                    <p className="empty-state">No reports to display.</p>
+                  ) : reports.map(report => (
                     <div key={report.id} className="table-row">
-                      <span>{report.id}</span>
+                      <span className="report-id-cell">{report.id.substring(18)}</span>
                       <div className="preview-container">
                         <img src={report.preview} alt="Report Preview" className="report-preview-img" />
                       </div>
-                      <span>{report.reason}</span>
+                      <span className="reason-cell">{report.reason}</span>
                       <span>{report.date}</span>
 
-                      {/* Dropdown */}
-                      <select className="action-select">
-                        <option value="">Select</option>
-                        <option value="ignore">Remove Content</option>
-                        <option value="remove">Ban User</option>
-                        <option value="ban">Ignore</option>
-                      </select>
+                      <div className="select-wrapper">
+                        <select
+                          className="action-select"
+                          onChange={(e) => handleReportAction(report.id, e.target.value)}
+                          value=""
+                        >
+                          <option value="">Select</option>
+                          <option value="remove_content">Remove Art</option>
+                          <option value="ban_user">Ban Owner</option>
+                          <option value="ignore">Dismiss Report</option>
+                        </select>
+                      </div>
                     </div>
                   ))}
                 </div>
               </>
             ) : (
               <div className="challenges-tab">
-                <h2>Create New Challenge</h2>
-                <form onSubmit={handleCreateChallenge} className="challenge-form">
-                  <div className="form-group">
-                    <label>Title:</label>
-                    <input
-                      type="text"
-                      value={challengeForm.title}
-                      onChange={(e) => setChallengeForm({ ...challengeForm, title: e.target.value })}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Description:</label>
-                    <textarea
-                      value={challengeForm.description}
-                      onChange={(e) => setChallengeForm({ ...challengeForm, description: e.target.value })}
-                      required
-                    />
-                  </div>
-                  <div className="form-group-row">
-                    <div className="form-group">
-                      <label>Start Date:</label>
-                      <input
-                        type="date"
-                        value={challengeForm.startDate}
-                        onChange={(e) => setChallengeForm({ ...challengeForm, startDate: e.target.value })}
-                        required
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label>End Date:</label>
-                      <input
-                        type="date"
-                        value={challengeForm.endDate}
-                        onChange={(e) => setChallengeForm({ ...challengeForm, endDate: e.target.value })}
-                        required
-                      />
-                    </div>
-                  </div>
+                <div className="challenge-form-wrapper">
+                  <h2 className="section-title">Create New Challenge</h2>
+                  <form onSubmit={handleCreateChallenge} className="challenge-form-aesthetic">
+                    <div className="form-grid">
+                      <div className="form-group main-group">
+                        <label>Challenge Title</label>
+                        <input
+                          type="text"
+                          placeholder="e.g. Midnight Sketches"
+                          value={challengeForm.title}
+                          onChange={(e) => setChallengeForm({ ...challengeForm, title: e.target.value })}
+                          required
+                        />
+                      </div>
+                      <div className="form-group main-group">
+                        <label>Description</label>
+                        <textarea
+                          placeholder="Describe the challenge rules and inspiration..."
+                          value={challengeForm.description}
+                          onChange={(e) => setChallengeForm({ ...challengeForm, description: e.target.value })}
+                          required
+                        />
+                      </div>
+                      <div className="form-row">
+                        <div className="form-group">
+                          <label>Start Date</label>
+                          <input
+                            type="date"
+                            value={challengeForm.startDate}
+                            onChange={(e) => setChallengeForm({ ...challengeForm, startDate: e.target.value })}
+                            required
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label>End Date</label>
+                          <input
+                            type="date"
+                            value={challengeForm.endDate}
+                            onChange={(e) => setChallengeForm({ ...challengeForm, endDate: e.target.value })}
+                            required
+                          />
+                        </div>
+                      </div>
 
-                  <div className="form-group">
-                    <label>Criteria Tags:</label>
-                    <div className="tag-input-row">
-                      <input
-                        type="text"
-                        placeholder="Tag Name"
-                        value={newTag.name}
-                        onChange={(e) => setNewTag({ ...newTag, name: e.target.value })}
-                      />
-                      <input
-                        type="number"
-                        placeholder="Points"
-                        value={newTag.points}
-                        onChange={(e) => setNewTag({ ...newTag, points: parseInt(e.target.value) })}
-                        style={{ width: '80px' }}
-                      />
-                      <button type="button" onClick={handleAddTag} className="add-tag-btn">Add Tag</button>
+                      <div className="form-group criteria-section">
+                        <label>Engagement Tags & Rewards</label>
+                        <div className="tag-input-row-modern">
+                          <input
+                            type="text"
+                            placeholder="Tag name (e.g. #Inktober)"
+                            value={newTag.name}
+                            onChange={(e) => setNewTag({ ...newTag, name: e.target.value })}
+                          />
+                          <input
+                            type="number"
+                            placeholder="Pts"
+                            value={newTag.points}
+                            onChange={(e) => setNewTag({ ...newTag, points: parseInt(e.target.value) })}
+                          />
+                          <button type="button" onClick={handleAddTag} className="add-tag-v2">Add</button>
+                        </div>
+                        <div className="tags-container-modern">
+                          {challengeForm.criteriaTags.map((tag, index) => (
+                            <div key={index} className="tag-pill-modern">
+                              <span>{tag.name}</span>
+                              <span className="pts">+{tag.points}</span>
+                              <button type="button" onClick={() => codeRemoveTag(index)} className="remove-tag">×</button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
                     </div>
-                    <div className="tags-list">
-                      {challengeForm.criteriaTags.map((tag, index) => (
-                        <span key={index} className="tag-item">
-                          {tag.name} ({tag.points} pts)
-                          <button type="button" onClick={() => codeRemoveTag(index)} className="remove-tag-btn">x</button>
-                        </span>
-                      ))}
-                    </div>
-                  </div>
+                    <button type="submit" className="publish-challenge-btn">Publish Challenge</button>
+                  </form>
+                </div>
 
-                  <button type="submit" className="create-challenge-btn">Create Challenge</button>
-                </form>
-
-                <h2>Existing Challenges</h2>
-                <div className="challenges-list">
-                  <div className="table-header">
-                    <span>Title</span>
-                    <span>Start Date</span>
-                    <span>End Date</span>
-                  </div>
-                  <div className="table-body">
-                    {challenges.map(challenge => (
-                      <div key={challenge._id} className="table-row">
-                        <span>{challenge.title}</span>
-                        <span>{new Date(challenge.startDate).toLocaleDateString()}</span>
-                        <span>{new Date(challenge.endDate).toLocaleDateString()}</span>
+                <div className="existing-challenges-wrapper">
+                  <h2 className="section-title">Active Challenges</h2>
+                  <div className="challenges-grid-modern">
+                    {challenges.length === 0 ? (
+                      <p className="empty-list">No active challenges found.</p>
+                    ) : challenges.map(challenge => (
+                      <div key={challenge._id} className="challenge-item-card">
+                        <div className="challenge-icon-box">🏆</div>
+                        <div className="challenge-details">
+                          <h4 className="challenge-item-title">{challenge.title}</h4>
+                          <p className="challenge-item-dates">
+                            {new Date(challenge.startDate).toLocaleDateString()} — {new Date(challenge.endDate).toLocaleDateString()}
+                          </p>
+                        </div>
                       </div>
                     ))}
                   </div>

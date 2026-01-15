@@ -32,6 +32,7 @@ router.delete('/friends/cancel', verifyToken, cancelOutgoingRequest);
 router.get('/friends', verifyToken, getFriendsList);
 router.get('/friends/pending', verifyToken, getPendingRequests);
 router.get('/friends/outgoing', verifyToken, getOutgoingRequests);
+router.put('/ban/:id', verifyToken, isAdmin, banUser);
 
 router.get('/:id', verifyToken, getUserById);
 router.get('/:id/achievements', verifyToken, getUserAchievements);
